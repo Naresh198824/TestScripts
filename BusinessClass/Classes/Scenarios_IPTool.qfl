@@ -1,0 +1,35 @@
+﻿
+
+Function SalesOrderCreation(InputData)
+	'Start Reporting 
+	Reporter.StartStatusTrack	
+	Reporter.StartFunction "Scenario TC_0.1_Sales Order Creation","True"
+	
+	' Invoke Application
+'	SAPLogon(aLoginData)
+	FioriAppLaunch
+	Wait 5
+	' Login 
+	LoginDetails(InputData)
+	
+	' Select My App
+	SelectMyApp "Sales - Sales Order Processing"
+	
+	' T-Code
+	SelectTCode InputData, "Create Sales OrdersVA01"
+	
+	OrderDetails(InputData)
+	
+	EnterSalesOrderDetails(InputData)
+	
+	
+	'clsControlsSAP.SetSAPOKCode ("/nVA01")
+'	oTest.SetSAPOKCode "/nVA01"
+	
+'	oControls.SetSAPOKCode "/nVA01"
+	
+	 
+	 Reporter.EndFunction
+        Reporter.EndStatusTrack
+End Function
+

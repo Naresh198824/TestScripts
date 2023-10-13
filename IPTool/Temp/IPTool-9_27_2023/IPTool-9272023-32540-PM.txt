@@ -1,0 +1,11 @@
+*************************IPTool*************************
+Step-1	Done	Began of Scenario TC_0.2_Sales Order Creation	3:26:01 PM
+Step-2	Done	Began of fnOTCFlow with referance	3:26:01 PM
+Step-3	Done	Began of SAP Login	3:26:01 PM
+Step-4	PASS	Successfully logged into 'S4Hana-2020-FPS02' system	3:26:01 PM
+Step-5	Pass	Tcode /nVA01 has been set	3:26:01 PM
+Step-6	Pass	Value OR set in Edit Order Type  in Screen 	3:26:01 PM
+Step-7	Pass	Value ABCB set in Edit Sales Organization  in Screen 	3:26:01 PM
+Step-8	Pass	Value A1 set in Edit Distribution Channel  in Screen 	3:26:01 PM
+Step-9	Pass	Value B1 set in Edit Division  in Screen 	3:26:01 PM
+Step-10	Pass	Click action performed on Button Create with Reference in Screen Create Sales Documents	3:26:01 PM

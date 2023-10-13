@@ -1,0 +1,4 @@
+﻿<Properties>
+  <WatchEntry0 value="Browser(&quot;name:=Create Standard Order: Overview&quot;).Page(&quot;title:=Create Standard Order: Overview&quot;).SAPTable(&quot;micclass:=SAPTable&quot;,index:=2).Highlight" />
+  <WatchEntry1 value="objChkBox" />
+</Properties>

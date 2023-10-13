@@ -1,0 +1,462 @@
+﻿
+Public const TICKET_SUB = "swfname:=lkuNoteSubject"
+Public const TYPE_NOTE =  "swfname:=lkuNoteType"
+Public const NOTE_SUMMARY = "swfname:=txtSummary"
+Public const BUTTON_ACCEPT =  "swfname:=btnAccept"
+Public const  CUST_POPUP= "text:=Customer"
+Public const HIST_TAB = "swfname:=grdHistory"
+Public const TAB_CONTROL = "swfname:=tabControl"
+Public const PRIORITY_DROPDOWN = "swfname:=lkuPriority"
+Public const NEW_TICKET_TAB= "text:=New Ticket"
+Public const CUST_CONTACT= "text:=Customer Contact"
+Public const CONTACT_SEARCH = "swfname:=CustomerContactSearch"
+Public const SELECT_USER = "text:=User"
+Public const BUTTON_PANEL  = "swfname:=panelButtons"
+Public const OK_BUTTON  = "text:=OK"
+Public const TICKET_WINDOW = "regexpwndtitle:=Ticket"
+Public const BILL = "text:=Bill"
+Public const SELECT_BROKER= "text:=Broker"
+Public const SELECT_MPRN = "text:=MPRN"
+
+Set ACCNT_OPTION =  SwfWindow("regexpwndtitle:=Account Statement Options")
+Set COPY_BILL = SwfWindow("regexpwndtitle:=Copy Bills")
+
+'********************************************Select Active/Draft Status in UK Electricity Pricing Tab************************************************
+'FunctionName:  SelectStatus(sStatus)
+'sample data:  "SelectStatus "Active"
+' Created by : Naresh
+'******************************************************************************************************************************************
+
+Function SelectStatus(sStatus)
+	
+	If Reporter.lScenarioStatus = "FAIL"  Then
+			Exit Function
+Else
+	 Reporter.StartStatusTrack	
+	Reporter.StartFunction "SelectStatus","True"
+	
+	If SwfWindow("text:=Junifer Systems.*").SwfWindow("text:=Cost Sheet Pricing").SwfComboBox("swfname:=chkStatus").Exist(1) Then
+		
+		SwfWindow("text:=Junifer Systems.*").SwfWindow("text:=Cost Sheet Pricing").SwfComboBox("swfname:=chkStatus").Select sStatus
+
+		ReportWriter micPass, "Select Status Check", sStatus&" Status Selected Successfully", 0 
+	 else
+		 ReportWriter micFail, "Select Status Check",  sStatus&" Status Not Selected ", 1
+	
+	End If
+End If 
+End Function
+
+Function GasSelectStatus(sStatus)
+
+If Reporter.lScenarioStatus = "FAIL"  Then
+			Exit Function
+Else
+ Reporter.StartStatusTrack	
+	Reporter.StartFunction "GasSelectStatus","True"
+	
+	If SwfWindow("text:=Junifer Systems.*").SwfWindow("text:=Gas Cost Sheet Pricing").SwfComboBox("swfname:=chkStatus").Exist(1) Then
+		
+		SwfWindow("text:=Junifer Systems.*").SwfWindow("text:=Gas Cost Sheet Pricing").SwfComboBox("swfname:=chkStatus").Select sStatus
+
+		ReportWriter micPass, "Select Status Check", sStatus&" Status Selected Successfully", 0 
+	 else
+		 ReportWriter micFail, "Select Status Check",  sStatus&" Status Not Selected ", 1
+	
+	End If
+	
+End If 
+End Function
+
+Function ClickOnYesButton()
+
+If Reporter.lScenarioStatus = "FAIL"  Then
+			Exit Function
+Else
+Reporter.StartStatusTrack	
+	Reporter.StartFunction "ClickOnYesButton","True"
+	If SwfWindow("regexpwndtitle:=Junifer Systems.*").Dialog("regexpwndtitle:=Question").Static("text:=Are you sure you wish.*").Exist(5) Then
+			
+			Wait 2
+			ReportWriter micPass,  "Check Draft Copy Version Popup", "Draft Copy of the Selected Version Created Successfully",0
+			
+			SwfWindow("regexpwndtitle:=Junifer Systems.*").Dialog("regexpwndtitle:=Question").WinButton("text:=&Yes").Click
+	else
+			ReportWriter micFail,  "Check Draft Copy Version Popup", "Draft Copy of the Selected Version is Not Present",1
+	End If
+
+	wait 5
+
+	If SwfWindow("regexpwndtitle:=Junifer Systems.*").Dialog("regexpwndtitle:=Question").Static("text:=Would you like to open.*").Exist(15) Then
+			Wait 20
+			ReportWriter micPass,  "New Version Popup", "New Version Popup Created Successfully",0
+			Wait 2
+			SwfWindow("regexpwndtitle:=Junifer Systems.*").Dialog("regexpwndtitle:=Question").WinButton("regexpwndtitle:=&Yes").Click
+			Wait 2
+	else
+			wait 3
+			SwfWindow("regexpwndtitle:=Junifer Systems.*").Dialog("regexpwndtitle:=Question").WinButton("regexpwndtitle:=&Yes").Click
+			ReportWriter micPass,  "New Version Popup", "New Version Popup Created Successfully",0
+	
+	End If
+End If 
+
+End Function
+
+'********************************************Select All Rows in Popup *************************************************
+'FunctionName:   SelectAllOptions()
+'sample data:   SelectAllOptions()
+' Created by : Naresh
+'*******************************************************************************************************************
+
+Function SelectAllOptions()
+If Reporter.lScenarioStatus = "FAIL"  Then
+			Exit Function
+Else
+	Reporter.StartStatusTrack	
+	Reporter.StartFunction "SelectAllOptions","True"
+	Set WshShell = CreateObject("WScript.Shell")
+	SwfWindow("text:=Cost Sheet Pricing.*").SwfObject("swfname:=detailPanel").SwfTable("swfname:=grCosts").SelectRow 0
+	SwfWindow("text:=Cost Sheet Pricing.*").SwfObject("swfname:=detailPanel").SwfTable("swfname:=grCosts").Type micLCtrlDwn
+	wait 2
+	WshShell.SendKeys "^a"
+	SwfWindow("text:=Cost Sheet Pricing.*").SwfObject("swfname:=detailPanel").SwfTable("swfname:=grCosts").Type micLCtrlUp
+End If 
+End Function
+
+
+Function GasSelectAllOptions()
+	If Reporter.lScenarioStatus = "FAIL"  Then
+			Exit Function
+Else
+	Reporter.StartStatusTrack	
+	Reporter.StartFunction "GasSelectAllOptions","True"
+		Set WshShell = CreateObject("WScript.Shell")
+
+		SwfWindow("text:=Gas Cost Sheet Pricing.*").SwfObject("swfname:=detailPanel").SwfTable("swfname:=grCosts").SelectRow 0
+		SwfWindow("text:=Gas Cost Sheet Pricing.*").SwfObject("swfname:=detailPanel").SwfTable("swfname:=grCosts").Type micLCtrlDwn
+		wait 2
+		WshShell.SendKeys "^a"	
+		SwfWindow("text:=Gas Cost Sheet Pricing.*").SwfObject("swfname:=detailPanel").SwfTable("swfname:=grCosts").Type micLCtrlUp
+	End If 
+End Function
+
+'********************************************Delete All Rows in Popup *************************************************
+'FunctionName:   DeleteAllRows
+'sample data:   SDeleteAllRows
+' Created by : Naresh
+'*******************************************************************************************************************
+
+
+Function SelectAndDeleteAllRows()
+	If Reporter.lScenarioStatus = "FAIL"  Then
+			Exit Function
+Else
+	Reporter.StartStatusTrack	
+	Reporter.StartFunction "SelectAndDeleteAllRows","True"
+		SwfWindow("text:=Cost Sheet Pricing.*").SwfObject("swfname:=detailPanel").SwfTable("swfname:=grCosts").MouseMove
+		SwfWindow("text:=Cost Sheet Pricing.*").SwfObject("swfname:=detailPanel").SwfTable("swfname:=grCosts").Click micNoCoordinate,micNoCoordinate,micRightBtn
+		Set Keys = CreateObject("WScript.Shell")
+			Keys.SendKeys "^a" 
+			Keys.SendKeys("{DOWN}")
+			Keys.SendKeys("{DOWN}")
+'			Keys.SendKeys("{DOWN}")
+			Keys.SendKeys("{ENTER}")
+'	
+	End If 
+End Function
+
+
+Function GasSelectAndDeleteAllRows()
+	If Reporter.lScenarioStatus = "FAIL"  Then
+			Exit Function
+Else
+	Reporter.StartStatusTrack	
+	Reporter.StartFunction "GasSelectAndDeleteAllRows","True"
+		SwfWindow("text:=Gas Cost Sheet Pricing.*").SwfObject("swfname:=detailPanel").SwfTable("swfname:=grCosts").MouseMove
+		SwfWindow("text:=Gas Cost Sheet Pricing.*").SwfObject("swfname:=detailPanel").SwfTable("swfname:=grCosts").Click micNoCoordinate,micNoCoordinate,micRightBtn
+		Set Keys = CreateObject("WScript.Shell")
+'			Keys.SendKeys "^a" 
+			Keys.SendKeys("{DOWN}")
+			Keys.SendKeys("{DOWN}")
+'			Keys.SendKeys("{DOWN}")
+			Keys.SendKeys("{ENTER}")
+'	
+	End If 
+End Function
+
+Function SelectOneRowAndDelete
+	If Reporter.lScenarioStatus = "FAIL"  Then
+			Exit Function
+Else
+		Reporter.StartStatusTrack	
+	Reporter.StartFunction "SelectOneRowAndDelete","True"
+	Set DeviceReplay = CreateObject("Mercury.DeviceReplay")
+	Set Keys = CreateObject("WScript.Shell")
+
+			SwfWindow("text:=Cost Sheet Pricing.*").SwfObject("swfname:=detailPanel").SwfTable("swfname:=grCosts").SelectRow 0
+			x = SwfWindow("text:=Cost Sheet Pricing.*").SwfObject("swfname:=detailPanel").SwfTable("swfname:=grCosts").GetROProperty("abs_x")
+			x=x+10
+			y = SwfWindow("text:=Cost Sheet Pricing.*").SwfObject("swfname:=detailPanel").SwfTable("swfname:=grCosts").GetROProperty("abs_y")
+			y=y+30
+			Keys.SendKeys "^a" 
+			DeviceReplay.MouseClick x,y,2
+			
+			Keys.SendKeys("{DOWN}")
+			Keys.SendKeys("{DOWN}")
+'			Keys.SendKeys("{DOWN}")
+			Keys.SendKeys("{ENTER}")
+	End If 
+End Function
+
+
+Function GasSelectOneRowAndDelete
+	If Reporter.lScenarioStatus = "FAIL"  Then
+			Exit Function
+Else
+Reporter.StartStatusTrack	
+	Reporter.StartFunction "GasSelectOneRowAndDelete","True"
+	Set DeviceReplay = CreateObject("Mercury.DeviceReplay")
+	Set Keys = CreateObject("WScript.Shell")
+
+			SwfWindow("text:=Gas Cost Sheet Pricing.*").SwfObject("swfname:=detailPanel").SwfTable("swfname:=grCosts").SelectRow 0
+			x = SwfWindow("text:=Gas Cost Sheet Pricing.*").SwfObject("swfname:=detailPanel").SwfTable("swfname:=grCosts").GetROProperty("abs_x")
+			x=x+10
+			y = SwfWindow("text:=Gas Cost Sheet Pricing.*").SwfObject("swfname:=detailPanel").SwfTable("swfname:=grCosts").GetROProperty("abs_y")
+			y=y+30
+			Keys.SendKeys "^a" 
+			DeviceReplay.MouseClick x,y,2
+			
+			Keys.SendKeys("{DOWN}")
+			Keys.SendKeys("{DOWN}")
+'			Keys.SendKeys("{DOWN}")
+			Keys.SendKeys("{ENTER}")
+	End If 
+End Function
+
+Function SelectFile(InputData)
+If Reporter.lScenarioStatus = "FAIL"  Then
+			Exit Function
+Else
+	Reporter.StartStatusTrack	
+	Reporter.StartFunction "SelectFile","True"
+	If SwfWindow("text:=Cost Sheet Pricing.*").Dialog("regexpwndtitle:=Select import file.*").WinEdit("attached text:=File &name:","nativeclass:=Edit").Exist(1) Then
+			
+			SwfWindow("text:=Cost Sheet Pricing.*").Dialog("regexpwndtitle:=Select import file.*").WinEdit("attached text:=File &name:","nativeclass:=Edit").Type DATA_DIR &"SupportFiles\Elec Cost Sheets Files\"&InputData("FilePath")
+			wait 2
+			ReportWriter micPass, "Select File Check", "Excel File Selected Successfully",0
+		Else 
+			ReportWriter micFail, "Select File Check", "Please Select Excel File",1
+	End If
+	
+			SwfWindow("text:=Cost Sheet Pricing.*").Dialog("regexpwndtitle:=Select import file.*").WinEdit("regexpwndtitle:=&Open").Click
+
+	wait 10 
+	
+	If SwfWindow("regexpwndtitle:=Select worksheet.*").SwfComboBox("swfname:=editor").Exist(2) Then
+			wait 2
+			ReportWriter micPass, "WorkSheet Selection Check", " WorkSheet Selected Successfully ",0
+		else
+			ReportWriter micFail, "WorkSheet Selection Check"," WorkSheet Not Selected ",1
+
+	End If
+			SwfWindow("regexpwndtitle:=Select worksheet.*").SwfComboBox("swfname:=editor").Select InputData("DropDown")
+			
+			ReportWriter micPass, "WorkSheet DropDown Selection Check", " WorkSheet DropDown Selected Successfully ",0
+			
+			wait 2
+			SwfWindow("regexpwndtitle:=Select worksheet.*").SwfButton("regexpwndtitle:=OK").Click
+			wait 2
+			ReportWriter micPass, "Success Message Check", "Successfully Imported",0
+	End if 
+End Function
+
+
+
+Function SelectFileGas(InputData)
+If Reporter.lScenarioStatus = "FAIL"  Then
+			Exit Function
+Else
+Reporter.StartStatusTrack	
+	Reporter.StartFunction "SelectFileGas","True"
+	If SwfWindow("text:=Gas Cost Sheet Pricing.*").Dialog("regexpwndtitle:=Select import file.*").WinEdit("attached text:=File &name:","nativeclass:=Edit").Exist(1) Then
+			
+			SwfWindow("text:=Gas Cost Sheet Pricing.*").Dialog("regexpwndtitle:=Select import file.*").WinEdit("attached text:=File &name:","nativeclass:=Edit").Type DATA_DIR & "SupportFiles\Gas Cost Sheet Files\" &InputData("FilePath")
+			wait 2
+			ReportWriter micPass, "Select File Check", "Excel File Selected Successfully",0
+		Else 
+			ReportWriter micFail, "Select File Check", "Please Select Excel File",1
+	End If
+	
+			SwfWindow("text:=Gas Cost Sheet Pricing.*").Dialog("regexpwndtitle:=Select import file.*").WinEdit("regexpwndtitle:=&Open").Click
+
+	wait 10 
+	
+	If SwfWindow("regexpwndtitle:=Select worksheet.*").SwfComboBox("swfname:=editor").Exist(5) Then
+			wait 4
+			ReportWriter micPass, "WorkSheet Selection Check", " WorkSheet Selected Successfully ",0
+		else
+			ReportWriter micFail, "WorkSheet Selection Check"," WorkSheet Not Selected ",1
+
+	End If
+			SwfWindow("regexpwndtitle:=Select worksheet.*").SwfComboBox("swfname:=editor").Select InputData("DropDown")
+			
+			ReportWriter micPass, "WorkSheet DropDown Selection Check", " WorkSheet DropDown Selected Successfully ",0
+			
+			SwfWindow("regexpwndtitle:=Select worksheet.*").SwfButton("regexpwndtitle:=OK").Click
+			wait 2
+			ReportWriter micPass, "Success Message Check", "Successfully Imported",0
+	End If 
+End Function
+
+Function SelectFileOneRow(InputData)
+If Reporter.lScenarioStatus = "FAIL"  Then
+			Exit Function
+Else
+	Reporter.StartStatusTrack	
+	Reporter.StartFunction "SelectFileOneRow","True"
+	If SwfWindow("text:=Cost Sheet Pricing.*").Dialog("regexpwndtitle:=Select import file.*").WinEdit("attached text:=File &name:","nativeclass:=Edit").Exist(1) Then
+			wait 3
+			SwfWindow("text:=Cost Sheet Pricing.*").Dialog("regexpwndtitle:=Select import file.*").WinEdit("attached text:=File &name:","nativeclass:=Edit").Type DATA_DIR & "SupportFiles\Elec Cost Sheets Files\" &InputData("FilePath")
+			wait 2
+			ReportWriter micPass, "Select File Check", "Excel File Selected Successfully",0
+		Else 
+			ReportWriter micFail, "Select File Check", "Please Select Excel File",1
+	End If
+	
+			SwfWindow("text:=Cost Sheet Pricing.*").Dialog("regexpwndtitle:=Select import file.*").WinEdit("regexpwndtitle:=&Open").Click
+
+			wait 3
+		
+			ReportWriter micPass, "Success Message Check", "Successfully Imported",0
+			
+			Wait 2
+		
+			ReportWriter micPass, "Success Message Check1", "Successfully Imported1",0
+	
+'	If SwfWindow("regexpwndtitle:=Select worksheet.*").SwfComboBox("swfname:=editor").Exist(2) Then
+'			wait 2
+'			ReportWriter micPass, "WorkSheet Selection Check", " WorkSheet Selected Successfully ",0
+'		else
+'			ReportWriter micFail, "WorkSheet Selection Check"," WorkSheet Not Selected ",1
+'
+'	End If
+'			SwfWindow("regexpwndtitle:=Select worksheet.*").SwfComboBox("swfname:=editor").Select InputData("DropDown")
+'			
+'			SwfWindow("regexpwndtitle:=Select worksheet.*").SwfButton("regexpwndtitle:=OK").Click
+'			wait 1
+'			ReportWriter micPass, "Success Message Check", "Successfully Imported",0
+End If 	
+End Function
+
+Function GasSelectFileOneRow(InputData)
+If Reporter.lScenarioStatus = "FAIL"  Then
+			Exit Function
+Else
+		Reporter.StartStatusTrack	
+	Reporter.StartFunction "GasSelectFileOneRow","True"
+	If SwfWindow("text:=Gas Cost Sheet Pricing.*").Dialog("regexpwndtitle:=Select import file.*").WinEdit("attached text:=File &name:","nativeclass:=Edit").Exist(1) Then
+			
+			SwfWindow("text:=Gas Cost Sheet Pricing.*").Dialog("regexpwndtitle:=Select import file.*").WinEdit("attached text:=File &name:","nativeclass:=Edit").Type DATA_DIR & "SupportFiles\Gas Cost Sheet Files\" &InputData("FilePath")
+			wait 2
+			ReportWriter micPass, "Select File Check", "Excel File Selected Successfully",0
+		Else 
+			ReportWriter micFail, "Select File Check", "Please Select Excel File",1
+	End If
+	
+			SwfWindow("text:=Gas Cost Sheet Pricing.*").Dialog("regexpwndtitle:=Select import file.*").WinEdit("regexpwndtitle:=&Open").Click
+
+			wait 3
+		
+			ReportWriter micPass, "Success Message Check", "Successfully Imported",0
+			
+			Wait 2
+		
+			ReportWriter micPass, "Success Message Check1", "Successfully Imported1",0
+	
+'	If SwfWindow("regexpwndtitle:=Select worksheet.*").SwfComboBox("swfname:=editor").Exist(2) Then
+'			wait 2
+'			ReportWriter micPass, "WorkSheet Selection Check", " WorkSheet Selected Successfully ",0
+'		else
+'			ReportWriter micFail, "WorkSheet Selection Check"," WorkSheet Not Selected ",1
+'
+'	End If
+'			SwfWindow("regexpwndtitle:=Select worksheet.*").SwfComboBox("swfname:=editor").Select InputData("DropDown")
+'			
+'			SwfWindow("regexpwndtitle:=Select worksheet.*").SwfButton("regexpwndtitle:=OK").Click
+'			wait 1
+'			ReportWriter micPass, "Success Message Check", "Successfully Imported",0
+	End If 
+End Function
+
+Function VerifyCostSheetTable
+'If Reporter.lScenarioStatus = "FAIL"  Then
+'			Exit Function
+'Else
+	Reporter.StartStatusTrack	
+	Reporter.StartFunction "VerifyCostSheetTable","True"
+	If SwfWindow("text:=Cost Sheet Pricing.*").SwfObject("swfname:=detailPanel").SwfTable("swfname:=grCosts").Exist(5) Then
+		
+		Wait 2
+		
+		ReportWriter micPass, "Cost Sheet Table Check After Importing", " Cost Sheet Table Imported Successfully ",0
+		
+		wait 5
+		SwfWindow("text:=Cost Sheet Pricing.*").SwfButton("swfname:=btnAccept").Click
+'		SwfWindow("text:=Cost Sheet Pricing.*").SwfObject("swfname:=panelButtons").SwfButton("regexpwndtitle:=OK").Click
+		wait 2
+	else
+		ReportWriter micFail, "Cost Sheet Table Check After Importing"," Please Select Valid File ",1
+
+	End If
+		If SwfWindow("regexpwndtitle:=Junifer Systems.*").SwfWindow("text:=Cost Sheet Pricing").SwfTable("swfname:=grid").Exist(1) Then
+			
+			ReportWriter micPass, "Cost Sheet Pricing Table Check After Importing", " Cost Sheet Pricing Copy Version Created Successfully ",0
+		else
+			ReportWriter micFail, "Cost Sheet Pricing Table Check After Importing"," Cost Sheet Pricing Copy Version Is Not Created ",1
+			
+		End If 
+'End If 
+End Function
+
+
+Function GasVerifyCostSheetTable
+If Reporter.lScenarioStatus = "FAIL"  Then
+			Exit Function
+Else
+	Reporter.StartStatusTrack	
+	Reporter.StartFunction "GasVerifyCostSheetTable","True"
+	If SwfWindow("text:=Gas Cost Sheet Pricing.*").SwfObject("swfname:=detailPanel").SwfTable("swfname:=grCosts").Exist(2) Then
+		
+		wait 2
+		ReportWriter micPass, "Cost Sheet Table Check After Importing", " Cost Sheet Table Imported Successfully ",0
+		
+		wait 2
+		SwfWindow("text:=Gas Cost Sheet Pricing.*").SwfObject("swfname:=panelButtons").SwfButton("regexpwndtitle:=OK").Click
+		wait 2
+	else
+		ReportWriter micFail, "Cost Sheet Table Check After Importing"," Please Select Valid File ",1
+
+	End If
+	Wait 3
+	If SwfWindow("regexpwndtitle:=Junifer Systems.*").SwfWindow("text:=Gas Cost Sheet Pricing").SwfTable("swfname:=grid").Exist(1) Then
+		
+			ReportWriter micPass, "Cost Sheet Pricing Table Check After Importing", " Cost Sheet Pricing Copy Version Created Successfully ",0
+		else
+			ReportWriter micFail, "Cost Sheet Pricing Table Check After Importing"," Cost Sheet Pricing Copy Version Is Not Created ",1
+			
+		End If 
+'	If SwfWindow("regexpwndtitle:=Junifer Systems Ltd.*").SwfTable("swfname:=grid").Exist(1) Then
+'		
+'		wait 2
+'		ReportWriter micPass, "Cost Sheet Draft Version Check", "Drafted Version Created Successfully ",0
+'	else
+'		
+'		ReportWriter micFail, "Cost Sheet Draft Version Check", "Drafted Version is Not Created ",1
+'	End If
+	End If 
+End Function
+
+
+
+

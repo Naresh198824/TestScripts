@@ -1,0 +1,2600 @@
+﻿'Login Window
+Set SERVER_ADDRESS_WINDOW =SwfWindow("text:=Connect to application.*")
+Set LGN_WINDOW=SwfWindow("regexpwndtitle:=Junifer Login")
+
+'Junifer Main Application
+Set JUN_WINDOW=SwfWindow("regexpwndtitle:=Junifer Systems.*")
+Set JUN_CUSTOMER_TAB=SwfWindow("regexpwndtitle:=Junifer Systems.*").SwfWindow("regexpwndtitle:=Customer")
+Set JUN_ACCOUNT_TAB=SwfWindow("regexpwndtitle:=Junifer Systems.*").SwfWindow("regexpwndtitle:=Account")
+Set JUN_TICKET_TAB=SwfWindow("regexpwndtitle:=Junifer Systems.*").SwfWindow("regexpwndtitle:=Ticket")
+Set NewAccountWindow_CustSearch=SwfWindow("regexpwndtitle:=New Account").SwfWindow("regexpwndtitle:=Customer")
+Set NewAccountWindow_CustSearch_Tab=SwfWindow("regexpwndtitle:=New Account").SwfWindow("regexpwndtitle:=Customer").SwfTab("micclass:=SwfTab")
+Set NewCustomerNote=SwfWindow("regexpwndtitle:=New Customer Note")
+Set SelectWindow=SwfWindow("regexpwndtitle:=Select type")
+Set ImportRequest = SwfWindow("regexpwndtitle:=Junifer Systems.*").SwfObject("swfname:=ImportRequestSearch")
+Set SAMPLE = SwfWindow("regexpwndtitle:=Junifer Systems Ltd.*").SwfObject("swfname:=AccountSearch")														 
+Set JUN_BILL_WINDOW=SwfWindow("regexpwndtitle:=Junifer Systems.*").SwfWindow("regexpwndtitle:=Bill")
+
+
+'Common Objects
+Public x, y, sRowNo, dict, sTicketID, sFinalDate, TestName, sFrom, sTo, sReference, sSampleBillNo, sSheetName, sMoveAddress
+sTicketID=""
+sRowNo=""
+sSampleBillNo=""
+sSheetName=""
+
+Public const DIALOG_INFO              ="regexpwndtitle:=Information"
+Public const DIALOG_WARNING              ="text:=Warning"
+Public const DIALOG_QUESTION              ="text:=Question"
+Public const BTN_YES              ="text:=&Yes"
+Public const BTN_NO  ="text:=&No"							 
+Public const BTN_FINISH                      ="text:=Finish"
+Public const BTN_OK                      ="text:=OK"
+Public const BTN_SEARCH = "swfname:=btnSearch"
+Public const BTN_CLEAR = "swfname:=btnClear" 'New Obj
+Public const BTN_CUST_NEXT                      ="text:=Next"
+Public const BTN_NEWCUST_FINISH                   ="regexpwndtitle:=Finish"
+Public const BTN_NEWCUST_CLOSE                 ="regexpwndtitle:=Close"
+Public const BTN_CANCEL ="regexpwndtitle:=Cancel"
+Public const CLD_FROM_DT = "swfname:=dtpFromDt"
+
+Public const CLD_TO_DT = "swfname:=dtpToDt"
+Public const BTN_CLOSE = "regexpwndtitle:=Close"
+
+Public const SERVER_POPUP_ADDRESS		="swfname:=txtAddress"
+Public const SERVER_POPUP_OK			="swfname:=btnOk"
+Public const LGN_PWD                                    ="swfname:=txtPassword"
+Public const LGN_Login                                   ="regexpwndtitle:=Login"
+Public const JUN_TOOLBAR                            ="swfname:=ribbon"
+Public const EDT_ACCOUNTNO                     ="swfname:=txtNumber" 
+Public const EDT_ACCOUNTNAME               ="swfname:=txtName"
+Public const EDT_CUSTOMERNO                     ="swfname:=txtCustomerNo"
+Public const EDT_CUSTOMERNAME               ="swfname:=txtCustomerName"
+Public const CMB_BILLING_ENTITY              ="swfname:=lkubillingEntity"
+Public const BTN_ACCOUNT_SEARCH          ="swfname:=btnSearch"
+Public const JUN_NAVBAR                             ="swfname:=navBar"
+Public const CUSTOMER_NAV_FILTER         ="regexpwndtitle:=Filter.*"
+Public const CUST_FILTER                              ="swfname:=filterEdit"
+Public const EDITOR_NEWACC_CUSTSEARCH          ="swfname:=btnCustomer"
+Public const EDITOR_NEWACC_ACCSEARCH          ="swfname:=btnAccount"
+Public const EDT_NEWACC_CUSTSEARCH_NUM  ="swfname:=txtCustomerNo"
+Public const BTN_NEWACC_CUSTSEARCH_OK  ="regexpwndtitle:=OK"
+Public const BTN_NEWACC_CUSTSEARCH ="swfname:=btnSearch"
+Public const TBL_CUSTSEARCH ="swfname:=grid"
+Public const EDT_NEWTICKET  = "text:=New Ticket Note"												 
+Public const TBL_ACC_CONTACTS ="swfname:=contactsGrid"
+Public const EDT_MPAN_NO = "swfname:=txtMpanCore"
+Public const TBL_ACC_ACTIVITY ="swfname:=activityGrid"
+Public const TICKET_TABLE = "swfname:=grTickets"
+Public const EDT_TICKET = "swfname:=TicketDashboard"
+Public const CMB_SELECT_TYPE       ="swfname:=editor"												
+Public const EDT_USERNAME ="swfname:=txtUsername"
+Public const IMPORT_REQUEST = "regexpwndtitle:=Import Request"
+Public const CMB_CUST_ADD_TYPE           ="text:=.*Please select.*"
+Public const JUN_NOTIFICATION="swftypename:=DevExpress.XtraBars.Alerter.AlertForm"
+Public const CMB_LIMITER="swfname:=cmbLimiter"
+Public const BTN_EDIT="swfname:=btnEdit"
+Public const TBL_LINKAGE =  "swfname:=grLinkages"
+'Public Variables PDF
+Public GT_ACCOUNT,GT_ADDRESS_LINE1,GT_ADDRESS_LINE2,GT_ADDRESS_LINE3,GT_ADDRESS_LINE4,GT_POSTCODE,GT_INVOICE_NO,GT_DATE_OF_INVOICE,GT_INVOICE_PERIOD,GT_ACCOUNT_NO,GT_DUE_DATE,GT_TOTAL_AMOUNT_PAYABLE
+Public GT_DATE,GT_CUSTOMER_NAME,GT_ACCOUNT_NUMBER,GT_OVERDUE_DEBT,GT_GROSS_GBP,GT_OUTSTANDING_GBP,GT_FILEPATH,GT_FILENAME
+
+'******Letter 1*********
+GT_ACCOUNT=""
+GT_ADDRESS_LINE1=""
+GT_ADDRESS_LINE2=""
+GT_ADDRESS_LINE3=""
+GT_ADDRESS_LINE4=""
+GT_POSTCODE=""
+GT_INVOICE_NO=""
+GT_DATE_OF_INVOICE=""
+GT_INVOICE_PERIOD=""
+GT_ACCOUNT_NO=""
+GT_DUE_DATE=""
+GT_TOTAL_AMOUNT_PAYABLE=""
+
+'******Letter 2*********
+GT_DATE=""
+GT_CUSTOMER_NAME=""
+GT_ACCOUNT_NUMBER=""
+GT_OVERDUE_DEBT=""
+GT_GROSS_GBP=""
+GT_OUTSTANDING_GBP=""
+
+GT_FILEPATH=""
+GT_FILENAME=""
+
+'Public const CMB_CUSTOMER_CLASS         ="swfname:=lkuCustomerClass"
+'Public const EDT_CUST_STARTDATE             ="swfname:=dtpFromDt"
+'Public const EDT_CUST_NAME                     ="swfname:=txtCompanyName"
+'Public const CMB_CUST_ADD_TYPE           ="text:=.*Please select.*"
+'Public const BTN_CUST_NEXT                      ="text:=Next"
+'Public const EDT_NEWCUST_ADDRESS		="micclass:=SwfEdit"
+'Public const EDT_ACCDETAILS_PARENTACC    ="swfname:=btnParentAccount"
+'Public const CMB_BILL_TYPE                 ="swfname:=lkuAccountType"
+'Public const CMB_ACC_PAYMENT_TYPE                 ="swfname:=lkuPaymentMethodType"
+'Public const BTN_NEWCUST_FINISH                   ="regexpwndtitle:=Finish"
+'Public const BTN_NEWCUST_CLOSE                 ="regexpwndtitle:=Close"
+'********************************** End of Initialization ***********************************
+
+Function InvokeJunifer
+	 '********************************** Login to Application ***********************************
+    ' @method                          : invokeApplicationAndLogin    
+    ' @notes                           : Invokes application & Login
+    ' @example                         : Call invokeApplicationAndLogin()
+'If Reporter.lScenarioStatus = "FAIL"  Then
+'		Exit Function
+'	Else
+		Reporter.StartStatusTrack	
+		Reporter.StartFunction "InvokeJunifer","True"
+
+    		If JUN_WINDOW.Exist(3) Then
+    		Else
+			Systemutil.Run ("C:\Windows\System32\cmd.exe")
+			wait 1
+			Set Keys = CreateObject("WScript.Shell")
+			wait 2
+			Keys.SendKeys("cd c:\")
+			Keys.SendKeys("{ENTER}")
+			Keys.SendKeys("cd "&DATA_DIR&"ClientUpdater\")
+			Keys.SendKeys("{ENTER}")
+			Keys.SendKeys("Gentrack.Tools.ClientUpdater.exe")
+			wait 1
+			Keys.SendKeys("{ENTER}")
+			Keys.SendKeys("Exit")
+			Keys.SendKeys("{ENTER}")
+			Set Keys=Nothing
+			wait 5
+		    
+	  		'Handle wait
+       		 	SERVER_ADDRESS_WINDOW.WaitProperty "enabled","True",20
+        
+       			 If SERVER_ADDRESS_WINDOW.Exist(1) Then
+           			 'Pass the End Point
+            			SwfSetvalueEdit SERVER_ADDRESS_WINDOW,SERVER_POPUP_ADDRESS,EXECUTION_ENVIRONMENT_2 ''"client.prep.engiees.sandbox.billing.gentrack.cloud"
+            
+          			  'Click ok button on the server address tab
+           			 SwfClickButton SERVER_ADDRESS_WINDOW,SERVER_POPUP_OK
+        		End If
+    
+       			 Wait property
+        		Set toolbarObj = LGN_WINDOW.SwfEdit(EDT_USERNAME)
+        		toolbarObj.WaitProperty "enabled","true",20
+        
+        		If LGN_WINDOW.Exist(1) Then
+            			ReportWriter MicPass, "Check login window appears", "Junifer login window loaded successfully",0
+        		Else
+            			ReportWriter MicFail, "Check login window appears", "Junifer login window failed to load",1        
+        		End If
+        
+        		Set toolbarObj=Nothing
+              
+        		'Handles login page
+        		SwfSetvalueEdit LGN_WINDOW,EDT_USERNAME,EXECUTION_ENVIRONMENT_3
+        		wait 1
+        		SwfSetvalueEdit LGN_WINDOW,LGN_PWD,EXECUTION_ENVIRONMENT_4
+        
+        		ReportWriter micPass,"Check Junifer Authorization window appears", "Junifer Authorization window appears", 0
+        		wait 1
+              
+        		'Handles Click Login
+         		SwfClickButton LGN_WINDOW,LGN_Login
+               
+        		 If LGN_WINDOW.SwfWindow("regexpwndtitle:=I O Exception").SwfButton("regexpwndtitle:=OK").Exist Then
+              			LGN_WINDOW.SwfWindow("regexpwndtitle:=I O Exception").SwfButton("regexpwndtitle:=OK").Click
+              			ReportWriter MicFail,"Login to Junifer","I O Exception occured when tried login into Junifer", 1
+        		 Else
+             			JUN_WINDOW.WaitProperty "enabled","True",1000
+             			ReportWriter micPass,"Login to Junifer","Login Successful", 0
+        		 End If        		  
+ 		End if
+ Reporter.EndFunction
+'End If
+End Function
+
+
+Function SearchForAnActiveAccount(mWindow,accountNumber,accountName,billingEntity)
+	'********************************** Search for an Active Customer ***********************************
+	' @HELP
+	    ' @method                          : searchForAnActiveAccount(accountNumber,accountName,billingEntity)
+	    ' @returns                         : None
+	    ' @parameter                       : accountNumber    :   Account Number to choose an Account
+	    ' @parameter                       : accountName      :   Account Name to choose an Account
+	    ' @parameter                       : billingEntity    :   Billing Entity to choose an Account  (Eg: Electricity or Gas)  
+	    ' @notes                           : Search for an Active Customer with given parameters
+	    ' @example                         : Call searchForAnActiveAccount(10175301,"JIGSAW BUSINESS GROUP LIMITED" ,"ENGIE Gas Limited (Gas)")
+	' @END
+	
+	    'Navigating to Accounts Module
+	    'Call SelectItemSwfToolbar(JUN_WINDOW,JUN_TOOLBAR,"Home","Home;Customers;Account")
+'	If Reporter.lScenarioStatus = "FAIL"  Then
+'			Exit Function
+'	Else	    
+'		'Wait property
+		Reporter.StartStatusTrack	
+		Reporter.StartFunction "SearchForAnActiveAccount","True"	
+		Set toolbarObj = mWindow.SwfEdit(EDT_ACCOUNTNO)
+		toolbarObj.WaitProperty "enabled","true",30000
+		Set toolbarObj=Nothing
+	
+	    If accountNumber<>"" Then
+	    	'Search for an account with its details (Set Account No)
+	    	Call SwfEditClearTypeTab(mWindow,EDT_ACCOUNTNO,accountNumber)
+	    End If
+	    
+	     If accountName<>"" Then
+	     	'Set Account Name
+	    	Call SwfEditClearTypeTab(mWindow,EDT_ACCOUNTNAME,accountName)
+	     End If
+	    
+	     If billingEntity<>"" Then
+	    	'Selects Billing Entity
+	    	Call SelValSwfComboBoxByText(mWindow, CMB_BILLING_ENTITY, billingEntity) 
+	   End If
+	    
+	    'Click Search Button
+	    Call SwfClickButton(mWindow, BTN_ACCOUNT_SEARCH)
+	 wait 2	
+	    ReportWriter MicPass,"Search for an Active Account","Account Search Successful", 0
+		Reporter.EndFunction		 
+''	End If
+	    
+End Function
+
+Function SearchSelectMenuNavigationBar(PageName,mididentifier,TabName,NavMenu)
+	'********************************** Search for an Active Customer ***********************************
+	' @HELP
+	    ' @method                          : SearchSelectMenu_NavigationBar(TabName,NavMenu)
+	    ' @returns                         : None
+	    ' @parameter                       : PageName (Page Name to select)
+	    ' @parameter                       : TabName (Tab Name to select)
+	    ' @parameter                       : NavMenu (Menu Name to select)    
+	    ' @notes                           : Search and select (Menu or Option) from the Navigation bar of select Page and tab. Pass the full name of option which needs to be selected.
+	    ' @example                         : Call SearchSelectMenu_NavigationBar("Home","Customer","New") or Call SearchSelectMenu_NavigationBar("UK Electricity","MPAN","New")
+	' @END
+	'********************************** Search for an Active Customer ***********************************
+'If Reporter.lScenarioStatus = "FAIL"  Then
+'			Exit Function
+'Else	
+		Reporter.StartStatusTrack	
+		Reporter.StartFunction "SearchSelectMenuNavigationBar","True"																		   
+	'Create Dynamic object to handle Search box hierarchy
+	 Set RibbonMenuName =SwfWindow("regexpwndtitle:=Junifer Systems.*") '.SwfWindow("regexpwndtitle:="&TabName)
+	 
+	'Call function to select the page and option(tab) under the page
+	If mididentifier<>"" Then
+		Call SelectItemSwfToolbar(JUN_WINDOW,JUN_TOOLBAR,PageName,PageName&";"&mididentifier&";"&TabName)	
+	End If
+	
+	 wait 3
+	  
+	 'Click Menu from Navigation Toolbar
+	 If Isnull(NavMenu) or NavMenu="" Then
+	 	'Do Nothing
+	 Else
+	 	 If RibbonMenuName.SwfEdit(CUST_FILTER).Exist(2) Then
+	 	 	Call SwfSetvalueEdit(RibbonMenuName,CUST_FILTER,NavMenu)
+	 	 	RibbonMenuName.SwfEdit(CUST_FILTER).Click
+	 	ElseIf RibbonMenuName.SwfEdit(CUSTOMER_NAV_FILTER).Exist(2) Then	
+	 		Call SwfSetvalueEdit(RibbonMenuName,CUSTOMER_NAV_FILTER,NavMenu)
+	 		RibbonMenuName.SwfEdit(CUSTOMER_NAV_FILTER).Click
+	 	End If
+	 	
+	 	wait 1
+	 	
+	 	'Sendkeys to press enter button keyboard action
+	  	Set Keys = CreateObject("WScript.Shell")
+	  	wait 1
+	  	Keys.SendKeys("{ENTER}")
+	  	Set Keys=Nothing
+	  	
+	 End If
+	 
+	 'Page load
+	 RibbonMenuName.WaitProperty "enabled","true",500
+	 Reporter.EndFunction
+'End If
+
+End  Function
+
+'Function SearchCustomerByNum(sCustomerNo)
+'	wait 3
+'	
+'	For z = 1 To 10
+'		If NewAccountWindow_CustSearch.SwfTable(TBL_CUSTSEARCH).Exist(5) Then
+'			Call SwfSetvalueEdit(NewAccountWindow_CustSearch_Tab,EDT_NEWACC_CUSTSEARCH_NUM,sCustomerNo)
+'			Exit for
+'		End If
+'	Next
+'	
+'	'Click Search Button
+'	Call SwfClickButton(NewAccountWindow_CustSearch,BTN_NEWACC_CUSTSEARCH)
+'	
+'	'To Handle table load time
+'	cnt=0
+'	Do While i<10
+'		cnt = NewAccountWindow_CustSearch.SwfTable(TBL_CUSTSEARCH).GetRowsCount
+'		If cnt>0 Then
+'			'Select Row
+'			'SwfTableSelectRow NewAccountWindow_CustSearch,TBL_CUSTSEARCH,"1"
+'			Exit Do
+'		Else
+'			i=i+1
+'		End If
+'	Loop
+'	
+'	'Click Ok Button
+'	Call SwfClickButton(NewAccountWindow_CustSearch,BTN_NEWACC_CUSTSEARCH_OK)
+'	
+'End  Function
+
+Function SearchCustomerByNum(mWindow,sWinId,sCustomerNo)
+If Reporter.lScenarioStatus = "FAIL"  Then
+			Exit Function
+Else	
+		Reporter.StartStatusTrack	
+		Reporter.StartFunction "SearchCustomerByNum","True"					
+	'To Create object based on Window ID
+	If sWinId<>"" and Isnumeric(sWinId) Then
+		Set MainObj = mWindow.SwfWindow("micClass:=SwfWindow","window id:="&sWinId)
+	ElseIf sWinId<>"" Then
+		Set MainObj = mWindow.SwfWindow(sWinId)
+	Else
+		Set MainObj = mWindow
+	End If
+	
+	wait 3
+	
+	'Wait property
+       Set toolbarObj = MainObj.SwfButton(BTN_NEWACC_CUSTSEARCH)
+       toolbarObj.WaitProperty "enabled","true",30000
+       Set toolbarObj=Nothing
+	
+	'To Set value in Customer No Edit Box
+	For z = 1 To 10
+		If MainObj.SwfTable(TBL_CUSTSEARCH).Exist(5) Then
+			If MainObj.SwfEdit(EDT_NEWACC_CUSTSEARCH_NUM).Exist(2) Then
+				Call SwfSetvalueEdit(MainObj,EDT_NEWACC_CUSTSEARCH_NUM,sCustomerNo)
+				Exit for
+			ElseIf MainObj.SwfEditor(EDITOR_NEWACC_CUSTSEARCH).Exist(2) Then
+				JUN_SwfEditorClearTypeTab 1,EDITOR_NEWACC_CUSTSEARCH, sCustomerNo
+				Exit for
+			End If
+		End If
+	Next
+	
+	'Click Search Button
+	Call SwfClickButton(MainObj,BTN_NEWACC_CUSTSEARCH)
+	
+	'To Handle table load time
+	cnt=0
+	Do While i<10
+		cnt = MainObj.SwfTable(TBL_CUSTSEARCH).GetRowsCount
+		If cnt>0 Then
+			'Select Row
+			'SwfTableSelectRow NewAccountWindow_CustSearch,TBL_CUSTSEARCH,"1"
+			Exit Do
+		Else
+			i=i+1
+		End If
+	Loop
+	
+	'Prints report and take screenshot
+	 ReportWriter micPass,"Search and Select Customer by Customer Number", "Customer Selected Successfully - "& sCustomerNo, 0	
+	'Click Ok Button
+	If MainObj.SwfButton(BTN_NEWACC_CUSTSEARCH_OK).Exist(2) Then
+		Call SwfClickButton(MainObj,BTN_NEWACC_CUSTSEARCH_OK)	
+	End If
+	
+	Reporter.EndFunction			 
+End If
+
+End  Function
+
+'Function CloseTab(sTabName)
+'
+'	'Uses Insight Object to Identify tab
+'	If Instr(1,UCase(sTabName),"CUSTOMER",0)>0 Then
+'		UIAProWindow("Junifer Systems Ltd").InsightObject("CustomerTab").Click
+'	ElseIf Instr(1,UCase(sTabName),"ACCOUNT",0)>0 Then
+'		UIAProWindow("Junifer Systems Ltd").InsightObject("AccountTab").Click
+'	End If
+'	
+'	
+'End Function
+
+Function SetValueInExcel
+	
+End Function
+
+Function SearchForAnActiveCustomer(mWindow,CustomerNumber,CustomerName,billingEntity)
+	'********************************** Search for an Active Customer ***********************************
+	' @HELP new
+	    ' @method                          : searchForAnActiveAccount(accountNumber,accountName,billingEntity)
+	    ' @returns                         : None
+	    ' @parameter                       : accountNumber    :   Account Number to choose an Account
+	    ' @parameter                       : accountName      :   Account Name to choose an Account
+	    ' @parameter                       : billingEntity    :   Billing Entity to choose an Account  (Eg: Electricity or Gas)  
+	    ' @notes                           : Search for an Active Customer with given parameters
+	    ' @example                         : Call searchForAnActiveAccount(10175301,"JIGSAW BUSINESS GROUP LIMITED" ,"ENGIE Gas Limited (Gas)")
+	' @END
+If Reporter.lScenarioStatus = "FAIL"  Then
+			Exit Function
+Else	
+	    Reporter.StartStatusTrack	
+		Reporter.StartFunction "SearchForAnActiveCustomer","True"
+		'Navigating to Accounts Module
+	    'Call SelectItemSwfToolbar(JUN_WINDOW,JUN_TOOLBAR,"Home","Home;Customers;Account")
+	   
+	   'Wait property
+       	Set toolbarObj = mWindow.SwfEdit(EDT_CUSTOMERNO)
+       	toolbarObj.WaitProperty "enabled","true",30000
+       	Set toolbarObj=Nothing
+		
+	    If CustomerNumber<>"" Then
+	    	'Search for an account with its details (Set Account No)
+	    	Call SwfEditClearTypeTab(mWindow,EDT_CUSTOMERNO,CustomerNumber)
+	    End If
+	    
+	     If CustomerName<>"" Then
+	     	'Set Account Name
+	    	Call SwfEditClearTypeTab(mWindow,EDT_CUSTOMERNAME,CustomerName)
+	     End If
+	    
+	    'Click Search Button
+	    Call SwfClickButton(mWindow, BTN_ACCOUNT_SEARCH)
+	    Wait 2
+	    ReportWriter MicPass,"Search for an Customer","Customer Search Successful", 0
+		Reporter.EndFunction			 
+End If
+
+End Function
+
+Function AddCustomerContact(mWindow,sWinId,InputData)
+	' @HELP new
+	    ' @method                          : searchForAnActiveAccount(accountNumber,accountName,billingEntity)
+	    ' @returns                         : None
+	    ' @parameter                       : accountNumber    :   Account Number to choose an Account
+	    ' @parameter                       : accountName      :   Account Name to choose an Account
+	    ' @parameter                       : billingEntity    :   Billing Entity to choose an Account  (Eg: Electricity or Gas)  
+	    ' @notes                           : Search for an Active Customer with given parameters
+	    ' @example                         : Call searchForAnActiveAccount(10175301,"JIGSAW BUSINESS GROUP LIMITED" ,"ENGIE Gas Limited (Gas)")
+	' @END
+If Reporter.lScenarioStatus = "FAIL"  Then
+			Exit Function
+Else	
+	Reporter.StartStatusTrack	
+	Reporter.StartFunction "AddCustomerContact","True"					   											   
+	Set MainObj = mWindow.SwfWindow("micClass:=SwfWindow","window id:="&sWinId)
+
+	'Set Contact type
+	If MainObj.SwfComboBox("text:=Residential").Exist(3) Then
+		Cus_Title_index = 2
+		SelValSwfComboBoxByTextDblClick MainObj,"index:=1",InputData("AddressType")
+	Else
+		Cus_Title_index = 1
+	End If
+
+'Set Address Type
+	For z = 1 To 10
+		If MainObj.SwfComboBox(CMB_CUST_ADD_TYPE).Exist(5) Then
+			SelValSwfComboBoxByTextDblClick MainObj,CMB_CUST_ADD_TYPE,InputData("PrimaryAddressType")
+			Exit for
+		End If	
+	Next
+		
+	'Set Care of
+	If InputData("CareOf")<>"" Then
+		'Set Description
+		SwfSetvalueEdit MainObj,"index:=1",InputData("CareOf")
+	End If
+	
+	'Set Description
+	If InputData("PrimaryContactDescription")<>"" Then
+		SwfSetvalueEdit MainObj,"index:=3",InputData("PrimaryContactDescription")
+	End If
+	    
+	'Select Billing Entity
+	wait 1
+	SelValSwfComboBoxByTextDblClick MainObj, Cus_Title_index, InputData("Cus_Title")
+	wait 2
+	
+	'Set Initials
+	If InputData("Initials")<>"" Then
+		SwfSetvalueEdit MainObj,"index:=5",InputData("Initials")	
+	End If
+	
+	'Set Forename
+	If InputData("ForeName")<>"" Then
+		SwfSetvalueEdit MainObj,"index:=7",InputData("ForeName")
+	End If
+	
+	'Set Surname
+	If InputData("SurName")<>"" Then
+		SwfSetvalueEdit MainObj,"index:=9",InputData("SurName")	
+	End If
+	
+	'Set JobTitle
+	If InputData("JobTitle")<>"" Then
+		SwfSetvalueEdit MainObj,"index:=11",InputData("JobTitle")	
+	End If
+	
+	'Set HomePhone
+	If InputData("HomePhone")<>"" Then
+		SwfSetvalueEdit MainObj,"index:=13",InputData("HomePhone")	
+	End If
+	
+	'Set MobilePhone
+	If InputData("MobilePhone")<>"" Then
+		SwfSetvalueEdit MainObj,"index:=15",InputData("MobilePhone")	
+	End If
+	
+	'Set WorkPhone
+	If InputData("WorkPhone")<>"" Then
+		SwfSetvalueEdit MainObj,"index:=17",InputData("WorkPhone")	
+	End If
+	
+	'Set DOB
+	If InputData("DOB")<>"" Then
+		SwfSetvalueEdit MainObj,"index:=18",InputData("DOB")
+	End If
+	
+	'Set SecurityNo
+	If InputData("SecurityNo")<>"" Then
+		SwfSetvalueEdit MainObj,"index:=20",InputData("SecurityNo")	
+	End If
+	
+	'Set Email
+	If InputData("Email")<>"" Then
+		SwfSetvalueEdit MainObj,"index:=22",InputData("Email")		
+	End If
+	
+	'Set Web
+	If InputData("Web")<>"" Then
+		SwfSetvalueEdit MainObj,"index:=24",InputData("Web")
+	End If
+	   
+	   'Set Address Line 1
+	   If InputData("PrimaryAddress1")<>"" Then
+	   	SwfSetvalueEdit MainObj,"index:=25",InputData("PrimaryAddress1")
+	   End If
+	   
+	   'Set Address Line 2
+	   If InputData.Item("PrimaryAddress2")<>"" Then
+	   	SwfSetvalueEdit MainObj,"index:=27",InputData.Item("PrimaryAddress2")
+	   End If
+	   
+          'Set Address Line 3
+	   If InputData.Item("PrimaryAddress3")<>"" Then
+	   	SwfSetvalueEdit MainObj,"index:=29",InputData.Item("PrimaryAddress3")
+	   End If
+	   
+	   'Set Address Line 4
+	   If InputData.Item("PrimaryAddress4")<>"" Then
+	   	SwfSetvalueEdit MainObj,"index:=31",InputData.Item("PrimaryAddress4")
+	   End If
+	   
+	   'Set Address Line 5
+	   If InputData.Item("PrimaryAddress5")<>"" Then
+	   	SwfSetvalueEdit MainObj,"index:=33",InputData.Item("PrimaryAddress5")
+	   End If
+	   
+	   'Set Post Code
+	   If InputData.Item("PrimaryPostCode")<>"" Then
+	   	SwfSetvalueEdit MainObj,"index:=35",InputData.Item("PrimaryPostCode")
+	   End If	   
+	   
+	  'Set Country
+	  SelValSwfComboBoxByTextDblClick MainObj,"index:=2",InputData.Item("PrimaryCountry")
+	  
+	  wait 1
+	  'Print report and takes screenshot
+	  ReportWriter micPass,"Enter all required details in Primary Contact Details page", "All required details provided Successfully", 0
+	  
+	  'Click Next Button
+	  SwfClickButton MainObj,BTN_OK
+	  Reporter.EndFunction
+End If
+
+End Function
+
+Function AddAccountContact(mWindow,sWinId,InputData)
+	' @HELP new
+	    ' @method                          : searchForAnActiveAccount(accountNumber,accountName,billingEntity)
+	    ' @returns                         : None
+	    ' @parameter                       : accountNumber    :   Account Number to choose an Account
+	    ' @parameter                       : accountName      :   Account Name to choose an Account
+	    ' @parameter                       : billingEntity    :   Billing Entity to choose an Account  (Eg: Electricity or Gas)  
+	    ' @notes                           : Search for an Active Customer with given parameters
+	    ' @example                         : Call searchForAnActiveAccount(10175301,"JIGSAW BUSINESS GROUP LIMITED" ,"ENGIE Gas Limited (Gas)")
+	' @END
+If Reporter.lScenarioStatus = "FAIL"  Then
+	Exit Function
+Else	
+	Reporter.StartStatusTrack	
+	Reporter.StartFunction "AddAccountContact","True"					   
+	'To Create object based on Window ID
+	If sWinId<>"" and Isnumeric(sWinId) Then
+		Set MainObj = mWindow.SwfWindow("micClass:=SwfWindow","window id:="&sWinId)
+	ElseIf sWinId<>"" Then
+		Set MainObj = mWindow.SwfWindow(sWinId)
+	Else
+		Set MainObj = mWindow
+	End If
+	
+	If UCase(InputData("BillDelivery"))="POSTAL" Then
+		sBillDel="Swfname:=chkBillDeliveryPostFlg"
+	ElseIf UCase(InputData("BillDelivery"))="EMAIL" Then
+		sBillDel="Swfname:=chkBillDeliveryEmailFlg"
+	Else
+		sBillDel=""
+	End If
+	
+	'Set Check box
+	If sBillDel<>"" Then
+		sChecked=MainObj.SwfCheckBox(sBillDel).GetROProperty("checked")
+		If sChecked="True" Then
+			
+		Else
+			SwfCheckBox MainObj, sBillDel
+		End If	
+	End If
+	
+	'Set Contact type
+	If InputData("AddressType")<>"" Then
+		SelValSwfComboBoxByTextDblClick MainObj,"index:=1",InputData("AddressType")	
+	End If
+	
+	'Set Address Type
+	If InputData("PrimaryAddressType")<>"" Then
+		For z = 1 To 10
+			If MainObj.SwfComboBox(CMB_CUST_ADD_TYPE).Exist(5) Then
+				SelValSwfComboBoxByTextDblClick MainObj,CMB_CUST_ADD_TYPE,InputData("PrimaryAddressType")
+				Exit for
+			End If	
+		Next
+	End If
+	
+	'Set contact type
+	If InputData("PrimaryContactType")<>"" Then
+		SelValSwfComboBoxByTextDblClick MainObj,"index:=1",InputData("PrimaryContactType")
+	End If
+	
+	'Set Care of
+	If InputData("CareOf")<>"" Then
+		'Set Description
+		SwfSetvalueEdit MainObj,"index:=1",InputData("CareOf")
+	End If
+	
+	'Set Description
+	If InputData("PrimaryContactDescription")<>"" Then
+		SwfSetvalueEdit MainObj,"index:=3",InputData("PrimaryContactDescription")
+	End If
+	
+	wait 1
+	
+	'Select Billing Entity
+	If InputData("Cus_Title")<>"" Then
+		SelValSwfComboBoxByTextDblClick MainObj, "index:=2", InputData("Cus_Title")	
+	End If
+	
+	wait 2
+	
+	'Set Initials
+	If InputData("Initials")<>"" Then
+		SwfSetvalueEdit MainObj,"index:=5",InputData("Initials")	
+	End If
+	
+	'Set Forename
+	If InputData("ForeName")<>"" Then
+		SwfSetvalueEdit MainObj,"index:=7",InputData("ForeName")
+	End If
+	
+	'Set Surname
+	If InputData("SurName")<>"" Then
+		SwfSetvalueEdit MainObj,"index:=9",InputData("SurName")&sRowNo
+	End If
+	
+	'Set JobTitle
+	If InputData("JobTitle")<>"" Then
+		SwfSetvalueEdit MainObj,"index:=11",InputData("JobTitle")	
+	End If
+	
+	'Set HomePhone
+	If InputData("HomePhone")<>"" Then
+		SwfSetvalueEdit MainObj,"index:=13",InputData("HomePhone")	
+	End If
+	
+	'Set MobilePhone
+	If InputData("MobilePhone")<>"" Then
+		SwfSetvalueEdit MainObj,"index:=15",InputData("MobilePhone")	
+	End If
+	
+	'Set WorkPhone
+	If InputData("WorkPhone")<>"" Then
+		SwfSetvalueEdit MainObj,"index:=17",InputData("WorkPhone")	
+	End If
+	
+	'Set DOB
+	If InputData("DOB")<>"" Then
+		SwfSetvalueEdit MainObj,"index:=18",InputData("DOB")
+	End If
+	
+	'Set SecurityNo
+	If InputData("SecurityNo")<>"" Then
+		SwfSetvalueEdit MainObj,"index:=20",InputData("SecurityNo")	
+	End If
+	
+	'Set Email
+	If InputData("Email")<>"" Then
+		SwfSetvalueEdit MainObj,"index:=22",InputData("Email")		
+	End If
+	
+	'Set Web
+	If InputData("Web")<>"" Then
+		SwfSetvalueEdit MainObj,"index:=24",InputData("Web")
+	End If
+	   
+	   'Set Address Line 1
+	   If InputData("PrimaryAddress1")<>"" Then
+	   	SwfSetvalueEdit MainObj,"index:=25",InputData("PrimaryAddress1")
+	   End If
+	   
+	   'Set Address Line 2
+	   If InputData.Item("PrimaryAddress2")<>"" Then
+	   	SwfSetvalueEdit MainObj,"index:=27",InputData.Item("PrimaryAddress2")
+	   End If
+	   
+          'Set Address Line 3
+	   If InputData.Item("PrimaryAddress3")<>"" Then
+	   	SwfSetvalueEdit MainObj,"index:=29",InputData.Item("PrimaryAddress3")
+	   End If
+	   
+	   'Set Address Line 4
+	   If InputData.Item("PrimaryAddress4")<>"" Then
+	   	SwfSetvalueEdit MainObj,"index:=31",InputData.Item("PrimaryAddress4")
+	   End If
+	   
+	   'Set Address Line 5
+	   If InputData.Item("PrimaryAddress5")<>"" Then
+	   	SwfSetvalueEdit MainObj,"index:=33",InputData.Item("PrimaryAddress5")
+	   End If
+	   
+	   'Set Post Code
+	   If InputData.Item("PrimaryPostCode")<>"" Then
+	   	SwfSetvalueEdit MainObj,"index:=35",InputData.Item("PrimaryPostCode")
+	   End If	   
+	   
+	  'Set Country
+	  If InputData("PrimaryCountry")<>"" Then
+	  	SelValSwfComboBoxByTextDblClick MainObj,"index:=3",InputData.Item("PrimaryCountry")	
+	  End If
+	  
+	  wait 1
+	  'Print report and takes screenshot
+	  ReportWriter micPass,"Enter all required details in Primary Contact Details page", "All required details provided Successfully", 0
+	  
+	  'Click Next Button
+	  SwfClickButton MainObj,BTN_OK
+	 Reporter.EndFunction 
+End If
+
+End Function
+
+Function SelectOptionMenuBar(mWindow,sWinId,Category,NavMenu)
+	'********************************** Search for an Active Customer ***********************************
+	' @HELP
+	    ' @method                          : SelectOptionMenuBar(mWindow,sWinId,NavMenu)
+	    ' @returns                         : None
+	    ' @parameter                       : mWindow
+	    ' @parameter                       : sWinId
+	    ' @parameter                       : NavMenu (Menu Name to select)    
+	    ' @notes                           : Search and select (Menu or Option) from the Navigation bar of select Page and tab. Pass the full name of option which needs to be selected.
+	    ' @example                         : Call SearchSelectMenu_NavigationBar("Home","Customer","New") or Call SearchSelectMenu_NavigationBar("UK Electricity","MPAN","New")
+	' @END
+	'********************************** Search for an Active Customer ***********************************
+	
+	'Create Dynamic object to handle Search box hierarchy
+	' Set RibbonMenuName =SwfWindow(mWindow).SwfWindow("micClass:=SwfWindow","window id:="&sWinId)
+'If Reporter.lScenarioStatus = "FAIL"  Then
+'	Exit Function
+'Else	
+	Reporter.StartStatusTrack	
+	Reporter.StartFunction "SelectOptionMenuBar","True"	
+ 	wait 8	
+	'To Create object based on Window ID
+	If sWinId<>"" and Isnumeric(sWinId) Then
+		Set MainObj = mWindow.SwfWindow("micClass:=SwfWindow","window id:="&sWinId)
+	ElseIf sWinId<>"" Then
+		Set MainObj = mWindow.SwfWindow(sWinId)
+	Else
+		Set MainObj = mWindow
+	End If
+	
+	'wait
+	MainObj.WaitProperty "enabled","true",1000
+	
+	'Click Menu from Navigation Toolbar
+	 If Isnull(NavMenu) or NavMenu="" Then
+	 
+	 	If MainObj.SwfEdit(CUST_FILTER).Exist(2) Then
+	 	 	Call SwfSetvalueEdit(MainObj,CUST_FILTER,Category)
+	 	 	MainObj.SwfEdit(CUST_FILTER).Click
+	 	ElseIf MainObj.SwfEdit(CUSTOMER_NAV_FILTER).Exist(2) Then	
+	 		Call SwfSetvalueEdit(MainObj,CUSTOMER_NAV_FILTER,Category)
+	 		MainObj.SwfEdit(CUSTOMER_NAV_FILTER).Click
+	 	End If
+	 	
+	 	wait 1
+	 	
+	 	'ReportWriter micPass, "Select", NavMenu&" Selected Successfully", 0
+	 	
+	 	'Sendkeys to press enter button keyboard action
+	  	Set Keys = CreateObject("WScript.Shell")
+	  	Wait 2
+	  	Keys.SendKeys("{ENTER}")
+	  	Set Keys=Nothing
+	  	
+	 Else
+	 	 If MainObj.SwfEdit(CUST_FILTER).Exist(2) Then
+	 	 	Call SwfSetvalueEdit(MainObj,CUST_FILTER,NavMenu)
+	 	 	MainObj.SwfEdit(CUST_FILTER).Click
+	 	ElseIf MainObj.SwfEdit(CUSTOMER_NAV_FILTER).Exist(2) Then	
+	 		Call SwfSetvalueEdit(MainObj,CUSTOMER_NAV_FILTER,NavMenu)
+	 		MainObj.SwfEdit(CUSTOMER_NAV_FILTER).Click
+	 	End If
+	 	
+	 	wait 5
+	 	
+	 	If Category<>"" Then
+	 		MainObj.SwfToolBar(JUN_NAVBAR,"swftypename:=Junifer.Thor.UI.Bars.BaseNavBarControl").ClickLink Category&";"&NavMenu
+	 		
+	 	End If
+	 	
+	 		'Sendkeys to press enter button keyboard action
+	  		Set Keys = CreateObject("WScript.Shell")
+	  		Wait 1
+	  		Keys.SendKeys("{ENTER}")
+	  		Set Keys=Nothing
+	 	
+	 	
+		wait 4
+	  	
+	 End If
+	Reporter.EndFunction				  
+
+
+End  Function
+
+Function SelectOptionDownMenuBar(mWindow,sWinId,Category,NavMenu)
+	'********************************** Search for an Active Customer ***********************************
+	' @HELP
+	    ' @method                          : SelectOptionMenuBar(mWindow,sWinId,NavMenu)
+	    ' @returns                         : None
+	    ' @parameter                       : mWindow
+	    ' @parameter                       : sWinId
+	    ' @parameter                       : NavMenu (Menu Name to select)    
+	    ' @notes                           : Search and select (Menu or Option) from the Navigation bar of select Page and tab. Pass the full name of option which needs to be selected.
+	    ' @example                         : Call SearchSelectMenu_NavigationBar("Home","Customer","New") or Call SearchSelectMenu_NavigationBar("UK Electricity","MPAN","New")
+	' @END
+	'********************************** Search for an Active Customer ***********************************
+	
+	'Create Dynamic object to handle Search box hierarchy
+	' Set RibbonMenuName =SwfWindow(mWindow).SwfWindow("micClass:=SwfWindow","window id:="&sWinId)
+If Reporter.lScenarioStatus = "FAIL"  Then
+	Exit Function
+Else	
+	'To Create object based on Window ID
+	If sWinId<>"" and Isnumeric(sWinId) Then
+		Set MainObj = mWindow.SwfWindow("micClass:=SwfWindow","window id:="&sWinId)
+	ElseIf sWinId<>"" Then
+		Set MainObj = mWindow.SwfWindow(sWinId)
+	Else
+		Set MainObj = mWindow
+	End If
+	
+	'wait
+	MainObj.WaitProperty "enabled","true",1000
+	
+	'Click Menu from Navigation Toolbar
+	 If Isnull(NavMenu) or NavMenu="" Then
+	 
+	 	If MainObj.SwfEdit(CUST_FILTER).Exist(2) Then
+	 	 	Call SwfSetvalueEdit(MainObj,CUST_FILTER,Category)
+	 	 	MainObj.SwfEdit(CUST_FILTER).Click
+	 	ElseIf MainObj.SwfEdit(CUSTOMER_NAV_FILTER).Exist(2) Then	
+	 		Call SwfSetvalueEdit(MainObj,CUSTOMER_NAV_FILTER,Category)
+	 		MainObj.SwfEdit(CUSTOMER_NAV_FILTER).Click
+	 	End If
+	 	
+	 	wait 1
+	 	
+	 	'ReportWriter micPass, "Select", NavMenu&" Selected Successfully", 0
+	 	
+	 	'Sendkeys to press enter button keyboard action
+	  	Set Keys = CreateObject("WScript.Shell")
+	  	Wait 2
+	  	Keys.SendKeys("{DOWN}")
+	  	Keys.SendKeys("{ENTER}")
+	  	Set Keys=Nothing
+	  	
+	 Else
+	 	 If MainObj.SwfEdit(CUST_FILTER).Exist(2) Then
+	 	 	Call SwfSetvalueEdit(MainObj,CUST_FILTER,NavMenu)
+	 	 	MainObj.SwfEdit(CUST_FILTER).Click
+	 	ElseIf MainObj.SwfEdit(CUSTOMER_NAV_FILTER).Exist(2) Then	
+	 		Call SwfSetvalueEdit(MainObj,CUSTOMER_NAV_FILTER,NavMenu)
+	 		MainObj.SwfEdit(CUSTOMER_NAV_FILTER).Click
+	 	End If
+	 	
+	 	wait 4
+	 	
+	 	If Category<>"" Then
+	 		MainObj.SwfToolBar(JUN_NAVBAR,"swftypename:=Junifer.Thor.UI.Bars.BaseNavBarControl").ClickLink Category&";"&NavMenu
+	 	End If
+	 	
+		wait 4
+		
+	 	'Sendkeys to press enter button keyboard action
+	  	Set Keys = CreateObject("WScript.Shell")
+	  	Wait 2
+	  	Keys.SendKeys("{DOWN}")
+	  	Keys.SendKeys("{ENTER}")
+	  	Set Keys=Nothing
+	  	
+	 End If
+End if 
+
+End  Function
+
+Function Option_AccountTermination(sMethod,InputData)
+
+If Reporter.lScenarioStatus = "FAIL"  Then
+			Exit Function
+Else
+	Reporter.StartStatusTrack	
+	Reporter.StartFunction "Option_AccountTermination","True"					   
+	'Click either Terminate or cancel based on parameter
+	If UCase(sMethod)="TERMINATE" Then
+		'Clicks Terminate Button
+		SwfClickButton TerminateAccWindow,CHK_TERMINATE
+		
+		'Prints report and take screenshot
+	 	ReportWriter micPass,"Select Account end type as Terminate", "Terminate option selected", 0
+	 	
+	 	'Clicks Next Button
+	 	SwfClickButton TerminateAccWindow,BTN_CUST_NEXT
+	 	
+	 	wait 1
+	 	
+	 	'Select Account End date
+	 	SelValSwfComboBoxByTextDblClick TerminateAccWindow,CMB_CLOSETYPE,InputData("AccTerminateDay")
+		'Prints report and take screenshot
+	 	ReportWriter micPass,"Set Terminate Day", "Terminate date set", 0							 
+	 	'Clicks Next Button
+	 	SwfClickButton TerminateAccWindow,BTN_CUST_NEXT
+	 	
+	 	'To Manage contacts
+	 	FillContactDetails InputData,TerminateAccWindow,""
+	 	
+	ElseIf UCase(sMethod)="CANCEL" Then
+		'Clicks Terminate Button
+		SwfClickButton TerminateAccWindow,CHK_CANCEL
+		
+		'Prints report and take screenshot
+	 	ReportWriter micPass,"Select Account end type as Cancel", "Cancel option selected", 0
+	 	
+	 	'Clicks Finish Button
+	 	SwfClickButton TerminateAccWindow,BTN_NEWCUST_FINISH
+	End If
+	Reporter.EndFunction				
+End If
+
+End Function
+
+Function SearchByNum(mWindow,sWinId,sPropandVal,sNo)
+	'********************************** Search for an Active Customer ***********************************
+	' @HELP
+	    ' @method                          : searchForAnActiveAccount(accountNumber,accountName,billingEntity)
+	    ' @returns                         : None
+	    ' @parameter                       : accountNumber    :   Account Number to choose an Account
+	    ' @parameter                       : accountName      :   Account Name to choose an Account
+	    ' @parameter                       : billingEntity    :   Billing Entity to choose an Account  (Eg: Electricity or Gas)  
+	    ' @notes                           : Search for an Active Customer with given parameters
+	    ' @example                         : Call searchForAnActiveAccount(10175301,"JIGSAW BUSINESS GROUP LIMITED" ,"ENGIE Gas Limited (Gas)")
+	' @END
+
+If Reporter.lScenarioStatus = "FAIL"  Then
+			Exit Function
+Else
+		Reporter.StartStatusTrack	
+		Reporter.StartFunction "SearchByNum","True"					
+	    'To Create object based on Window ID
+		If sWinId<>"" and Isnumeric(sWinId) Then
+			Set MainObj = mWindow.SwfWindow("micClass:=SwfWindow","window id:="&sWinId)
+		ElseIf sWinId<>"" Then
+			Set MainObj = mWindow.SwfWindow(sWinId)
+		Else
+			Set MainObj = mWindow
+		End If
+		
+		
+	   	'Wait property
+       	Set toolbarObj = MainObj.SwfButton(BTN_ACCOUNT_SEARCH)
+       	toolbarObj.WaitProperty "enabled","true",30000
+       	
+       	'Report
+       	ReportWriter micPass,"Capture list of Accounts displayed", "Parent Accounts list displayed", 0
+	
+	    If sNo<>"" Then
+	    	'Search for an account with its details (Set Account No)
+	    	SwfEditClearTypeTab MainObj,sPropandVal,sNo
+	    End If
+	    
+	    'Click Search Button
+	    SwfClickButton MainObj, BTN_ACCOUNT_SEARCH
+	    
+	    'wait
+	    toolbarObj.WaitProperty "enabled","true",1000
+	    
+	    sCnt=MainObj.SwfTable(TBL_CUSTSEARCH).GetRowsCount
+	    
+	    'Prints report and take screenshot
+	    If sCnt>0 Then
+	    	ReportWriter micPass,"Search for an Parent Account using number as per Dataset", "Parent Account Search Complete", 0
+	    Else
+		ReportWriter micFail,"Search for an Parent Account using number as per Dataset", "Parent Account Search Complete - but no records found for given account number", 1
+	    End If
+	    
+	 	
+	    'Click Search Button
+	    If MainObj.SwfButton(BTN_OK).Exist(3) Then
+	    	SwfClickButton MainObj, BTN_OK	
+	    End If
+	    
+	    'Set to noting
+	    Set toolbarObj=Nothing
+	    
+	Reporter.EndFunction 					 
+End If
+
+End Function
+
+Function Option_AgreementTermination(sMethod,InputData)
+
+If Reporter.lScenarioStatus = "FAIL"  Then
+			Exit Function
+Else
+	Reporter.StartStatusTrack	
+	Reporter.StartFunction "Option_AgreementTermination","True"					   
+	'Click either Terminate or cancel based on parameter
+	If UCase(sMethod)="TERMINATE" Then
+		'Clicks Terminate Button
+		SwfClickButton TerminateAgreement,CHK_TERMINATE
+		
+		'Prints report and take screenshot
+	 	ReportWriter micPass,"Select Account end type as Terminate", "Terminate option selected", 0
+	 	
+	 	'Clicks Next Button
+	 	SwfClickButton TerminateAgreement,BTN_CUST_NEXT
+	 	
+	 	wait 1
+	 	
+	 	'Select Account End date
+	 	SwfCalendarSetDate TerminateAgreement,CLD_END_DT,FormatDateTime(Date,2)
+	 	
+		'Prints report and take screenshot
+	 	ReportWriter micPass,"Set Terminate Date", "Terminate Date Set", 0							 
+	 	'Clicks Next Button
+	 	SwfClickButton TerminateAgreement,BTN_CUST_NEXT
+	 	
+	 	wait 1
+	 	
+		'Prints report and take screenshot
+	 	ReportWriter micPass,"Click Finish Button", "Finish Button Clicked Successfully", 0							 
+	 	'Clicks Finish Button
+	 	SwfClickButton TerminateAgreement,BTN_NEWCUST_FINISH
+	 	
+	 	TerminateAgreement.SwfButton(BTN_NEWCUST_CLOSE).WaitProperty "enabled","True",500
+	 	
+	 	'Prints report and take screenshot
+	 	ReportWriter micPass,"Capture Summary and Click Close Button", "Summary Captured and Close clicked Successfully", 0
+	 	'Clicks Finish Button
+	 	SwfClickButton TerminateAgreement,BTN_NEWCUST_CLOSE
+	 	
+	ElseIf UCase(sMethod)="CANCEL" Then
+		'Clicks Terminate Button
+		SwfClickButton TerminateAgreement,CHK_CANCEL
+		
+		'Prints report and take screenshot
+	 	ReportWriter micPass,"Select Account end type as Cancel", "Cancel option selected", 0
+	 	
+	 	'Clicks Finish Button
+	 	SwfClickButton TerminateAgreement,BTN_NEWCUST_FINISH
+	 	
+	 	TerminateAgreement.SwfButton(BTN_NEWCUST_CLOSE).WaitProperty "enabled","True",500
+	 	
+	 	'Prints report and take screenshot
+	 	ReportWriter micPass,"Capture Summary and Click Close Button", "Summary Captured and Close clicked Successfully", 0							 
+	 	'Clicks Finish Button
+	 	SwfClickButton TerminateAgreement,BTN_NEWCUST_CLOSE
+	 	
+	End If
+	Reporter.EndFunction				 
+End If
+
+End Function
+
+Function OpenActiveAccount(InputData)
+If Reporter.lScenarioStatus = "FAIL"  Then
+			Exit Function
+	Else
+	'Navigate to Customer Account
+	SearchSelectMenuNavigationBar "Home","Customers","Account",""
+	
+	'Navigate to Customer Account
+	SearchForAnActiveAccount JUN_WINDOW,InputData("AccNo"),"",""
+	
+	 'Select Row
+	 cnt=0
+	 i=0
+	 Do While i<15
+		cnt = JUN_ACCOUNT_TAB.SwfTable(TBL_CUSTSEARCH).GetRowsCount
+		If cnt>0 Then
+			'Select Row
+			SwfTableSelectRow JUN_ACCOUNT_TAB, TBL_CUSTSEARCH, 0
+			'SwfTableSelectRow NewAccountWindow_CustSearch,TBL_CUSTSEARCH,"1"
+			Exit Do
+		Else
+			i=i+1
+		End If
+	Loop
+	
+	If i>=15 Then
+		 ReportWriter micFail,"Open an Active Account", "No Rows available for the given Account Number", 1
+	End if
+	
+	'Navigate to Customer Account
+	SelectOptionMenuBar JUN_WINDOW,1,"Actions","Edit"
+	wait 3
+	'Wait handles
+	JUN_WINDOW.SwfWindow("window id:=2").WaitProperty "enabled","true",1000
+	
+	'Prints report and take screenshot
+	 ReportWriter micPass,"Open an Active Account", "Account opened successfully", 0
+	End if 
+End Function
+
+Function SetExcelCellData(SheetName, intRow, intCol, strValue)
+    Set objExcel = CreateObject("Excel.Application")
+    objExcel.DisplayAlerts = False
+    Set objWorkbook = objExcel.Workbooks.Open(DATA_DIR&"TestData.xlsx") '(DB_PATH)
+    Set objSheet  = objWorkbook.Worksheets(SheetName)   'Or pass sheet number integer value 1,2,etc
+    objSheet.Cells(intRow, intCol).value = strValue
+    objWorkbook.Save
+    objWorkbook.Close
+    Set objSheet  = Nothing
+    Set objWorkbook = Nothing
+    Set objExcel = Nothing
+End Function
+
+Function GenRandomNum
+
+	'Set min and max
+	min = 1070
+	max = 1100
+	
+	'Randomize
+	RandomInt1=(int((max-min+1)*Rnd+min))
+	RandomInt2=(int((max-min+1)*Rnd+min))
+	
+	'Returns Value
+	GenRandomNum=RandomInt1&RandomInt2
+	
+End Function															  
+
+
+Function KillProcessJunifer
+
+	systemutil.CloseProcessByName "Junifer.Thor.Client.exe"
+
+End Function
+
+Function CaptureUKDateTime
+	If Reporter.lScenarioStatus = "FAIL"  Then
+			Exit Function
+	Else
+	'Store Current Date and Time with space as interval - hh:mm format
+	Hr= DateAdd("h", -5,Now)
+ 	SubHR=DateAdd("n", -30,Hr)
+ 	hm =Right("00" & Hour(SubHR), 2) &":"& Right("00" & Minute(SubHR), 2)
+ 	
+ 	'MM-DD-YYYY Format
+ 	tm=Now
+	sSplit=Split(tm," ")
+	If sSplit(1)<"05:30:00" Then
+		Tdy=DateAdd("d",-1,Date)
+	Else
+		Tdy=Date	
+	End If
+ 	
+ 	'Final Combined date without seconds
+ 	sFinalDate=Tdy &" "&hm 'eg: 09-11-2022 23:08
+ End if 	
+End Function
+
+Function SelectNewTicket_Table(mWindow, sWinId, sPropAndVal, sExpectedWindow)
+	If Reporter.lScenarioStatus = "FAIL"  Then
+			Exit Function
+	Else
+		'To Create object based on Window ID
+		If sWinId<>"" and Isnumeric(sWinId) Then
+			Set MainObj = mWindow.SwfWindow("micClass:=SwfWindow","window id:="&sWinId)
+		ElseIf sWinId<>"" Then
+			Set MainObj = mWindow.SwfWindow(sWinId)
+		Else
+			Set MainObj = mWindow
+		End If
+	
+		For w = 2 To 20
+			'Right click
+			MainObj.SwfTable(sPropAndVal).Click x,y,micRightBtn
+			
+			MainObj.SwfTable(sPropAndVal).Click
+		
+			MainObj.SwfTable(sPropAndVal).Click x,y,micRightBtn
+			
+			'Send keys to perform right click and select option
+			Set Keys = CreateObject("WScript.Shell")
+			
+			For q = 1 To w
+				Keys.SendKeys("{DOWN}")
+			Next
+			Keys.SendKeys("{ENTER}")
+			Set Keys = Nothing
+			
+			'New Txn Period
+			If sExpectedWindow.Exist(10) Then
+				Exit for
+			ElseIf SwfWindow("CommonWindow").InsightObject("Close").Exist(10) Then
+				SwfWindow("CommonWindow").InsightObject("Close").Click
+			ElseIf SwfWindow("window id:=0").SwfButton(BTN_CANCEL).Exist(2) Then
+				SwfWindow("window id:=0").SwfButton(BTN_CANCEL).Click
+			ElseIf JUN_WINDOW.SwfWindow("text:=BILL-VALUE.*").Exist(3) Then
+				CloseWindow "text:=BILL-VALUE.*"
+			End If
+			
+		Next
+	
+	End If
+	
+End Function
+
+Function SearchMPAN_UKElectricity(InputData) 'New
+If Reporter.lScenarioStatus = "FAIL"  Then
+			Exit Function
+	Else
+	'Navigate to Customer Account
+	SearchSelectMenuNavigationBar "UK ELECTRICITY","Admin","MPAN",""
+	
+	'wait
+	JUN_WINDOW.SwfWindow("window id:=1").SwfEdit(EDT_MPAN_NO).WaitProperty "enabled","true",500
+	
+	'Search a Data by Number
+	SearchByNum JUN_WINDOW,1,EDT_MPAN_NO,InputData("MPAN")
+	
+	wait 1
+	
+	'Select Row
+	 cnt=0
+	 Do While i<15
+		cnt = JUN_WINDOW.SwfWindow("window id:=1").SwfTable(TBL_CUSTSEARCH).GetRowsCount
+		If cnt>0 Then
+			'Select Row
+			JUN_SwfTableSelectRow JUN_WINDOW, 1, TBL_CUSTSEARCH, 0
+			Exit Do
+		Else
+			i=i+1
+		End If
+	Loop
+End If 	
+End Function
+
+Function SearchMPAN_UKGas(InputData) 'New
+If Reporter.lScenarioStatus = "FAIL"  Then
+			Exit Function
+	Else
+	'Navigate to Customer Account
+	SearchSelectMenuNavigationBar "UK Gas","Admin","MPRN",""
+	
+	'wait
+	JUN_WINDOW.SwfWindow("window id:=1").SwfEdit("swfname:=txtNumber").WaitProperty "enabled","true",500
+	
+	'Search a Data by Number
+	SearchByNum JUN_WINDOW,1,"swfname:=txtNumber",InputData("MPAN")
+	
+	wait 1
+	
+	'Select Row
+	 cnt=0
+	 Do While i<15
+		cnt = JUN_WINDOW.SwfWindow("window id:=1").SwfTable(TBL_CUSTSEARCH).GetRowsCount
+		If cnt>0 Then
+			'Select Row
+			JUN_SwfTableSelectRow JUN_WINDOW, 1, TBL_CUSTSEARCH, 0
+			Exit Do
+		Else
+			i=i+1
+		End If
+	Loop
+End If 
+End Function
+
+Function SavePDF
+If Reporter.lScenarioStatus = "FAIL"  Then
+			Exit Function
+	Else
+	'Check if server exception occurs
+	If JUN_WINDOW.SwfWindow("text:=Server Exception").Exist(3) Then
+		ReportWriter MicFail,"Validate Pdf","Server Exception occurred unable to view pdf", 1
+		JUN_WINDOW.SwfWindow("text:=Server Exception").SwfButton(BTN_OK).Click
+		Exit Function
+	else
+		ReportWriter MicDone,"Validate Pdf","Pdf available", 0
+	End If
+	
+	'Save Pdf
+	If Window("regexpwndtitle:= Adobe Reader").Exist(5) Then
+		'Set Pdf size to 100%
+		Window("regexpwndtitle:= Adobe Reader").WinEdit("regexpwndclass:=Edit","regexpwndtitle:=.*%").Set 100
+		
+		'Send keys to select
+		Set Keys = CreateObject("WScript.Shell")
+		Keys.SendKeys("{ENTER}")
+		
+		wait 2
+		
+		'Set Size to 100
+		ReportWriter MicPass,"Set Pdf Size to 100%","Pdf Size updated to 100%", 0
+		
+		Keys.SendKeys("+^(s)")
+		
+		wait 2
+		
+		'save file
+		Window("regexpwndtitle:= Adobe Reader").Dialog("text:=Save As").WaitProperty "enabled","True",1000
+		sNm=Window("regexpwndtitle:= Adobe Reader").Dialog("text:=Save As").WinEdit("regexpwndclass:=Edit").GetROProperty("text")
+		sTestNm = Split(TestName,"_")
+		
+		wait 2
+		
+		'Handle wait
+		Window("regexpwndtitle:= Adobe Reader").Dialog("text:=Save As").WinObject("regexpwndclass:=Address Band Root").WaitItemProperty "enabled","true",500
+		
+		'Set file save address
+		Window("regexpwndtitle:= Adobe Reader").Dialog("text:=Save As").WinObject("regexpwndclass:=Address Band Root").Click 5,5,micRightBtn
+		'Window("regexpwndtitle:= Adobe Reader").Dialog("text:=Save As").WinObject("regexpwndclass:=Address Band Root").
+		Keys.SendKeys("{DOWN}")
+		Keys.SendKeys("{DOWN}")
+		Keys.SendKeys("{DOWN}")
+		Keys.SendKeys("{ENTER}")
+		wait 1
+		Window("regexpwndtitle:= Adobe Reader").Dialog("text:=Save As").WinObject("regexpwndclass:=Address Band Root").Type sProjectPath&"\"&"Temp\"
+		Keys.SendKeys("{ENTER}")
+		
+		wait 2
+		
+		'Set Size to 100
+		ReportWriter MicPass,"Update Pdf save path to desired location","Pdf save location updated to - "&sProjectPath&"\"&"Temp\", 0
+		
+		'Set file name
+		Window("regexpwndtitle:= Adobe Reader").Dialog("text:=Save As").WinEdit("regexpwndclass:=Edit").Type sTestNm(0)&"_"&sNm
+		
+		'Set Size to 100
+		ReportWriter MicPass,"Update Pdf file name","Pdf file name updated to - "&sTestNm(0)&"_"&sNm, 0
+		
+		Window("regexpwndtitle:= Adobe Reader").Dialog("text:=Save As").WinButton("text:=&Save").Click
+		
+		wait 5
+		
+		If Dialog("regexpwndtitle:=Confirm Save As").Exist(2) Then
+			Dialog("regexpwndtitle:=Confirm Save As").WinButton("regexpwndtitle:=&Yes").Click	
+		End If
+		
+		wait 3
+		
+		'Set Nothing
+		Keys.SendKeys("^q")
+		Set Keys = Nothing
+		
+	ElseIf UIAWindow("name:=.*Microsoft​ Edge").Exist(2) Then
+		UIAWindow("name:=.*Microsoft​ Edge").UIAButton(UIA_PDF_SAVEAS).WaitProperty "enabled","true",500
+		UIAWindow("name:=.*Microsoft​ Edge").UIAButton(UIA_PDF_SAVEAS).Click
+		
+		wait 5
+		
+		'Set path
+		sNm=Window("regexpwndtitle:= Microsoft​ Edge").GetROProperty("text")
+		Window("regexpwndtitle:= Microsoft​ Edge").Dialog("regexpwndtitle:=Save As").WinEdit("regexpwndtitle:=File name.*").Set sAutomationPath&"\Engie\Temp\"&"7.7.7_"&sNm
+	End If
+	
+	'Validate Address
+	End If 
+End Function
+
+Function ReadPDFUtil_CreditControl_Customer_Letter_Old(Pdf_file_Name,Pdf_file_Path)
+
+If Reporter.lScenarioStatus = "FAIL"  Then
+			Exit Function
+Else	
+	
+	PdfUtil.Open (Pdf_file_Path&Pdf_file_Name&".pdf")
+	wait 3
+	PDFApplication("name:="&Pdf_file_Name&".pdf").Maximize
+	wait 2
+	ReadTextP1= PDFApplication("name:="&Pdf_file_Name&".pdf").GetText()
+	
+	Main= replace(replace (ReadTextP1, " ",""),"Â","")
+
+	ReportWriter micPass,"Capture PDF Page 1 screenshots", "Captured Screenshot for Page1 PDF.", 0
+	
+	''Account no
+	S100=split(Main,"*Account")(1)
+	PDF_ACCOUNT=trim(split(S100,"*")(0))
+	ReportWriter micDone,"Capture PDF Account No.", "Captured PDF Account No: "&PDF_ACCOUNT, 0
+	ReportWriter micDone,"Capture GT Account No.", "Captured GT Account No: "&GT_ACCOUNT, 0
+	If Instr(1,PDF_ACCOUNT,GT_ACCOUNT)=0 Then
+		ReportWriter micDone,"Compare PDF and GT", "Captured GT Account Number does not match with PDF", 0
+	Else
+		ReportWriter micDone,"Compare PDF and GT", "Captured GT Account Number match with PDF", 0
+	End If
+	
+'	''Address Line1
+'	S200=split(Main,"*Address")(1)
+'	PDF_ADDRESS_LINE1=trim(split(S200,"*")(0))
+'	ReportWriter micDone,"Capture PDF Address Line 1.", "Captured PDF Address Line 1:Address"&PDF_ADDRESS_LINE1, 0
+'	If Instr(1,PDF_ACCOUNT,GT_ACCOUNT)=0 Then
+'		ReportWriter micDone,"Compare PDF and GT", "Captured GT Address Line 1 does not match with PDF", 0
+'	Else
+'		ReportWriter micDone,"Compare PDF and GT", "Captured GT Address Line 1 match with PDF", 0
+'	End If
+'	
+'	''Address Line2
+'	S300=split(Main,"Address2_")(1)
+'	PDF_ADDRESS_LINE2=trim(split(S300,"Address3_")(0))
+'	ReportWriter micDone,"Capture PDF Address Line 2.", "Captured PDF Address Line 2:Address2_"&PDF_ADDRESS_LINE2, 0
+'
+'	''Address Line3 and Line4, Post code
+'	If instr(Main,"Address4_") Then
+'		S400=split(Main,"Address3_")(1)
+'		PDF_ADDRESS_LINE3=trim(split(S400,"Address4_")(0))
+'		ReportWriter micDone,"Capture PDF Address Line 3.", "Captured PDF Address Line 3:Address3_"&PDF_ADDRESS_LINE3, 0
+'		
+'		S500=split(Main,"Address4_")(1)
+'		S21_Address_L4=split (S500,"InvoiceNumber")(0)
+'		PDF_ADDRESS_LINE4= trim(left (S21_Address_L4,(len(S21_Address_L4))-7))
+'		PDF_POSTCODE= trim(right (S21_Address_L4,7))
+'		ReportWriter micDone,"Capture PDF Address Line 4.", "Captured PDF Address Line 4:Address4_"&PDF_ADDRESS_LINE4, 0
+'		ReportWriter micDone,"Capture PDF Post code.", "Captured PDF Post code: "&PDF_POSTCODE, 0
+'
+'	Else 
+'		S400=split(Main,"Address3_")(1)
+'		S21_Address_L3=split(S400,"InvoiceNumber")(0)
+'		PDF_ADDRESS_LINE3= trim(left (S21_Address_L3,(len(S21_Address_L3))-7))
+'		PDF_POSTCODE= trim(right (S21_Address_L3,7))
+'		ReportWriter micDone,"Capture PDF Address Line 3.", "Captured PDF Address Line 3:Address3_"&PDF_ADDRESS_LINE3, 0
+'		ReportWriter micDone,"Capture PDF Post code.", "Captured PDF Post code: "&PDF_POSTCODE, 0
+'		
+'	End If
+'	
+'	''Invoce No
+'	S12=split(Main,"InvoiceNumber")(1)
+'	PDF_INVOICE_NO=split(S12,"DateofInvoice")(0)
+'	ReportWriter micDone,"Capture PDF Invoice No.", "Captured PDF Invoice No: "&PDF_INVOICE_NO, 0
+'	
+'	'' Date of Invoice
+'	S22=split(S12,"DateofInvoice")(1)
+'	PDF_DATE_OF_INVOICE=split(S22,"InvoicePeriod")(0)
+'	ReportWriter micDone,"Capture PDF Date of Invoice.", "Captured PDF Date of Invoice: "&PDF_DATE_OF_INVOICE, 0
+'	
+'	'' Invoice Period
+'	S32=split(S22,"InvoicePeriod")(1)
+'	PDF_INVOICE_PERIOD =split(S32,"YourAccountNumber")(0)
+'	ReportWriter micDone,"Capture PDF Invoice Period.", "Captured PDF Invoice Period: "&PDF_INVOICE_PERIOD, 0
+'	
+'	'' Account Number
+'	S42=split(S32,"YourAccountNumber")(1)
+'	PDF_ACCOUNT_NO =split(S42,"DueDate")(0)
+'	ReportWriter micDone,"Capture PDF Account No.", "Captured PDF Account No: "&PDF_ACCOUNT_NO, 0
+'	
+	'' Due Date
+	S52=split(S42,"DueDate")(1)
+	PDF_DUE_DATE =split(S52,"YourChargesSummary")(0)
+	ReportWriter micDone,"Capture PDF Due Date.", "Captured PDF Due Date: "&PDF_DUE_DATE, 0
+'	
+	'' Total Amount Payable
+	S62=split(S52,"TotalAmountPayable")(1)
+	PDF_TOTAL_AMOUNT_PAYABLE =split(S62,"YourPaymentInstructions")(0)
+	ReportWriter micDone,"Capture PDF Total Amount Payable.", "Captured PDF Total Amount Payable £: "&PDF_TOTAL_AMOUNT_PAYABLE, 0
+'	 
+	 PDFApplication("name:="&Pdf_file_Name&".pdf").Close 
+	
+End If
+End function
+
+Function ReadPDFUtil_CreditControl_Customer_Letter(Pdf_file_Name,Pdf_file_Path)
+
+If Reporter.lScenarioStatus = "FAIL"  Then
+		Exit Function
+	Else
+
+	
+	PdfUtil.Open (Pdf_file_Path&Pdf_file_Name&".pdf")
+	
+	wait 3
+	
+	PDFApplication("name:="&Pdf_file_Name&".pdf").Maximize
+	
+	wait 2
+	
+	ReadTextP1= PDFApplication("name:="&Pdf_file_Name&".pdf").GetText()
+	
+	
+	Main= replace(replace (ReadTextP1, " ",""),"Â","")
+	
+	ReportWriter micPass,"Capture PDF Page 1 screenshots", "Captured Screenshot for Page1 PDF.", 0
+	
+	
+	''Account no
+	
+	'    S100=split(Main,"*Account")(1)
+	
+	'    PDF_ACCOUNT_1=trim(split(S100,"*")(0))
+	
+	'    PDF_ACCOUNT="*Account"&PDF_ACCOUNT_1&"*"
+	
+	'    ReportWriter micDone,"Capture PDF Account No.", "Captured PDF Account No: "&PDF_ACCOUNT, 0
+	
+	'    ReportWriter micDone,"Capture GT Account No.", "Captured GT Account No: "&GT_ACCOUNT, 0
+	
+	'    If Instr(1,PDF_ACCOUNT,GT_ACCOUNT)=0 Then
+	
+	'        ReportWriter micDone,"Compare PDF and GT", "Captured GT Account Number does not match with PDF", 0
+	
+	'    Else
+	
+	'        ReportWriter micDone,"Compare PDF and GT", "Captured GT Account Number match with PDF", 0
+	
+	'    End If
+	
+	''Address Line1
+	
+	'    S200=split(Main,"*Address")(1)
+	
+	'    PDF_ADDRESS_LINE1_1=trim(split(S200,"*")(0))
+	
+	'    PDF_ADDRESS_LINE1="*Address"&PDF_ADDRESS_LINE1_1&"*"
+	
+	'    ReportWriter micDone,"Capture PDF Address Line 1.", "Captured PDF Address Line 1:"&PDF_ADDRESS_LINE1, 0
+	
+	'    ReportWriter micDone,"Capture GT Address Line 1.", "Captured GT Address Line 1:"&GT_ADDRESS_LINE1, 0
+	
+	'        
+	
+	'    If Instr(1,PDF_ACCOUNT,GT_ACCOUNT)=0 Then
+	
+	'        ReportWriter micDone,"Compare PDF and GT", "Captured GT Address Line 1 does not match with PDF", 0
+	
+	'    Else
+	
+	'        ReportWriter micDone,"Compare PDF and GT", "Captured GT Address Line 1 match with PDF", 0
+	
+	'    End If
+	
+	''Address Line2
+	
+	'    S300=split(Main,"Address2_")(1)
+	
+	'    PDF_ADDRESS_LINE2_1=trim(split(S300,"Address3_")(0))
+	
+	'    PDF_ADDRESS_LINE2= "Address2_"&PDF_ADDRESS_LINE2_1
+	
+	'    ReportWriter micDone,"Capture PDF Address Line 2.", "Captured PDF Address Line 2:"&PDF_ADDRESS_LINE2, 0
+	
+	'    ReportWriter micDone,"Capture GT Address Line 2.", "Captured GT Address Line 2:"&GT_ADDRESS_LINE2, 0
+	
+	'    If Instr(1,PDF_ADDRESS_LINE2,GT_ADDRESS_LINE2)=0 Then
+	
+	'        ReportWriter micDone,"Compare PDF and GT", "Captured GT Address Line 2 does not match with PDF", 0
+	
+	'    Else
+	
+	'        ReportWriter micDone,"Compare PDF and GT", "Captured GT Address Line 2 match with PDF", 0
+	
+	'    End If    
+	
+	'
+	
+	''Address Line3 and Line4, Post code
+	
+	'    If instr(Main,"Address4_") Then
+	
+	'        S400=split(Main,"Address3_")(1)
+	
+	'        PDF_ADDRESS_LINE3_1=trim(split(S400,"Address4_")(0))
+	
+	'        PDF_ADDRESS_LINE3= "Address3_"&PDF_ADDRESS_LINE3_1
+	
+	'        ReportWriter micDone,"Capture PDF Address Line 3.", "Captured PDF Address Line 3:"&PDF_ADDRESS_LINE3, 0
+	
+	'        ReportWriter micDone,"Capture GT Address Line 3.", "Captured GT Address Line 3:"&GT_ADDRESS_LINE3, 0
+	
+	'        If Instr(1,PDF_ADDRESS_LINE3,GT_ADDRESS_LINE3)=0 Then
+	
+	'            ReportWriter micDone,"Compare PDF and GT", "Captured GT Address Line 3 does not match with PDF", 0
+	
+	'        Else
+	
+	'            ReportWriter micDone,"Compare PDF and GT", "Captured GT Address Line 3 match with PDF", 0
+	
+	'        End If
+	
+	'        
+	
+	'        S500=split(Main,"Address4_")(1)
+	
+	'        S21_Address_L4=split (S500,"InvoiceNumber")(0)
+	
+	'        PDF_ADDRESS_LINE4_1= trim(left (S21_Address_L4,(len(S21_Address_L4))-7))
+	
+	'        PDF_ADDRESS_LINE4= "Address4_"&PDF_ADDRESS_LINE4_1
+	
+	'        PDF_POSTCODE= trim(right (S21_Address_L4,7))
+	
+	'        ReportWriter micDone,"Capture PDF Address Line 4.", "Captured PDF Address Line 4:"&PDF_ADDRESS_LINE4, 0
+	
+	'        ReportWriter micDone,"Capture GT Address Line 4.", "Captured GT Address Line 4:"&GT_ADDRESS_LINE4, 0
+	
+	'        If Instr(1,PDF_ADDRESS_LINE4,GT_ADDRESS_LINE4)=0 Then
+	
+	'            ReportWriter micDone,"Compare PDF and GT", "Captured GT Address Line 4 does not match with PDF", 0
+	
+	'        Else
+	
+	'            ReportWriter micDone,"Compare PDF and GT", "Captured GT Address Line 4 match with PDF", 0
+	
+	'        End If
+	
+	'        
+	
+	'        ReportWriter micDone,"Capture PDF Post code.", "Captured PDF Post code: "&PDF_POSTCODE, 0
+	
+	'        ReportWriter micDone,"Capture GT Post code.", "Captured GT Post code: "&GT_POSTCODE, 0
+	
+	'        If Instr(1,PDF_POSTCODE,GT_POSTCODE)=0 Then
+	
+	'            ReportWriter micDone,"Compare PDF and GT", "Captured GT Postcode does not match with PDF", 0
+	
+	'        Else
+	
+	'            ReportWriter micDone,"Compare PDF and GT", "Captured GT Postcode match with PDF", 0
+	
+	'        End If
+	
+	'    Else 
+	
+	'        S400=split(Main,"Address3_")(1)
+	
+	'        S21_Address_L3=split(S400,"InvoiceNumber")(0)
+	
+	'        PDF_ADDRESS_LINE3_1= trim(left (S21_Address_L3,(len(S21_Address_L3))-7))
+	
+	'        PDF_ADDRESS_LINE3= "Address3_"&PDF_ADDRESS_LINE3_1
+	
+	'        PDF_POSTCODE= trim(right (S21_Address_L3,7))
+	
+	'        ReportWriter micDone,"Capture PDF Address Line 3.", "Captured PDF Address Line 3:Address3_"&PDF_ADDRESS_LINE3, 0
+	
+	'        ReportWriter micDone,"Capture GT Address Line 3.", "Captured GT Address Line 3:Address3_"&GT_ADDRESS_LINE3, 0
+	
+	'        If Instr(1,PDF_ADDRESS_LINE3,GT_ADDRESS_LINE3)=0 Then
+	
+	'            ReportWriter micDone,"Compare PDF and GT", "Captured GT Address Line 3 does not match with PDF", 0
+	
+	'        Else
+	
+	'            ReportWriter micDone,"Compare PDF and GT", "Captured GT Address Line 3 match with PDF", 0
+	
+	'        End If
+	
+	'        
+	
+	'        
+	
+	'        ReportWriter micDone,"Capture PDF Post code.", "Captured PDF Post code: "&PDF_POSTCODE, 0
+	
+	'        ReportWriter micDone,"Capture GT Post code.", "Captured GT Post code: "&GT_POSTCODE, 0
+	
+	'        If Instr(1,PDF_POSTCODE,GT_POSTCODE)=0 Then
+	
+	'            ReportWriter micDone,"Compare PDF and GT", "Captured GT Postcode does not match with PDF", 0
+	
+	'        Else
+	
+	'            ReportWriter micDone,"Compare PDF and GT", "Captured GT Postcode match with PDF", 0
+	
+	'        End If
+	
+	'    End If
+	
+	
+	'Invoce No
+	
+	S12=split(Main,"InvoiceNumber")(1)
+	
+	PDF_INVOICE_NO=split(S12,"DateofInvoice")(0)
+	
+	ReportWriter micDone,"Capture PDF Invoice No.", "Captured PDF Invoice No: "&PDF_INVOICE_NO, 0
+	
+	ReportWriter micDone,"Capture Junifer new Invoice No.", "Captured Junifer new Invoice No: "&GT_INVOICE_NO, 0
+	
+	If Instr(1,PDF_INVOICE_NO,GT_INVOICE_NO)=0 Then
+	
+	ReportWriter micDone,"Compare PDF and Junifer", "Captured Junifer new Invoice Number does not match with PDF", 0
+	
+	Else
+	
+	ReportWriter micDone,"Compare PDF and Junifer", "Captured Junifer new Invoice Number match with PDF", 0
+	
+	End If
+	'' Date of Invoice
+	
+	S22=split(S12,"DateofInvoice")(1)
+	
+	PDF_DATE_OF_INVOICE=split(S22,"InvoicePeriod")(0)
+	
+	
+	ReportWriter micDone,"Capture PDF Date of Invoice.", "Captured PDF Date of Invoice: "&PDF_DATE_OF_INVOICE, 0
+	
+	ReportWriter micDone,"Capture Dataset Date of Invoice.", "Captured Dataset Date of Invoice: "&GT_DATE_OF_INVOICE, 0
+	
+	If Instr(1,PDF_DATE_OF_INVOICE,GT_DATE_OF_INVOICE)=0 Then
+	
+	ReportWriter micDone,"Compare PDF and Dataset", "Captured Dataset Date of Invoice does not match with PDF", 0
+	
+	Else
+	
+	ReportWriter micDone,"Compare PDF and Dataset", "Captured  Dataset  Date of Invoice match with PDF", 0
+	
+	End If
+	
+	
+	'' Invoice Period
+	
+	S32=split(S22,"InvoicePeriod")(1)
+	
+	PDF_INVOICE_PERIOD =split(S32,"YourAccountNumber")(0)
+	
+	ReportWriter micDone,"Capture PDF Invoice Period.", "Captured PDF Invoice Period: "&PDF_INVOICE_PERIOD, 0
+	
+	ReportWriter micDone,"Capture Dataset Invoice Period.", "Captured Dataset Invoice Period: "&GT_INVOICE_PERIOD, 0
+	
+	If Instr(1,PDF_INVOICE_PERIOD,GT_INVOICE_PERIOD)=0 Then
+	
+	ReportWriter micDone,"Compare PDF and Dataset", "Captured Dataset Invoice Period does not match with PDF", 0
+	
+	Else
+	
+	ReportWriter micDone,"Compare PDF and Dataset", "Captured Dataset  Invoice Period match with PDF", 0
+	
+	End If
+	
+	
+	'' Account Number
+	
+	S42=split(S32,"YourAccountNumber")(1)
+	
+	PDF_ACCOUNT_NO =split(S42,"DueDate")(0)
+	
+	ReportWriter micDone,"Capture PDF Account No.", "Captured PDF Account No: "&PDF_ACCOUNT_NO, 0
+	
+	ReportWriter micDone,"Capture Dataset Account No.", "Captured Dataset Account No: "&GT_ACCOUNT_NO, 0
+	
+	If Instr(1,PDF_ACCOUNT_NO,GT_ACCOUNT_NO)=0 Then
+	
+	ReportWriter micDone,"Compare PDF and Dataset", "Captured Dataset Account Number does not match with PDF", 0
+	
+	Else
+	
+	ReportWriter micDone,"Compare PDF and Dataset", "Captured Dataset  Account Number match with PDF", 0
+	
+	End If
+	
+	
+	' Due Date
+	
+	S52=split(S42,"DueDate")(1)
+	
+	PDF_DUE_DATE =split(S52,"YourChargesSummary")(0)
+	
+	ReportWriter micDone,"Capture PDF Due Date.", "Captured PDF Due Date: "&PDF_DUE_DATE, 0
+	
+	ReportWriter micDone,"Capture Dataset Due Date.", "Captured Dataset Due Date: "&GT_DUE_DATE, 0
+	
+	If Instr(1,PDF_DUE_DATE,GT_DUE_DATE)=0 Then
+	
+	ReportWriter micDone,"Compare PDF and Dataset", "Captured Dataset Due Datedoes not match with PDF", 0
+	
+	Else
+	
+	ReportWriter micDone,"Compare PDF and Dataset", "Captured Dataset  Due Date match with PDF", 0
+	
+	End If
+	
+	
+	'' Total Amount Payable
+	
+	S62=split(S52,"TotalAmountPayable")(1)
+	
+	PDF_TAP_x =split(S62,"YourPaymentInstructions")(0)
+	
+	PDF_TOTAL_AMOUNT_PAYABLE = Trim (replace (PDF_TAP_x,"£",""))
+	
+	ReportWriter micDone,"Capture PDF Total Amount Payable.", "Captured PDF Total Amount Payable £: "&PDF_TOTAL_AMOUNT_PAYABLE, 0
+	
+	ReportWriter micDone,"Capture Dataset Total Amount Payable.", "Captured Dataset Total Amount Payable £: "&GT_TOTAL_AMOUNT_PAYABLE, 0
+	
+	If Instr(1,PDF_TOTAL_AMOUNT_PAYABLE,GT_TOTAL_AMOUNT_PAYABLE)=0 Then
+	
+	ReportWriter micDone,"Compare PDF and Dataset", "Captured Dataset Total Amount Payable not match with PDF", 0
+	
+	Else
+	
+	ReportWriter micDone,"Compare PDF and Dataset", "Captured Dataset  Total Amount Payable match with PDF", 0
+	
+	End If
+	
+	PDFApplication("name:="&Pdf_file_Name&".pdf").Close
+	
+	End If
+
+End function
+
+Function ReadPDFUtil_CreditControl_Customer_Letter_Satement(Pdf_file_Name,Pdf_file_Path)
+
+If Reporter.lScenarioStatus = "FAIL"  Then
+		Exit Function
+	Else
+	PdfUtil.Open (Pdf_file_Path&Pdf_file_Name&".pdf")
+	
+	wait 3
+	
+	PDFApplication("name:="&Pdf_file_Name&".pdf").Maximize
+	
+	wait 2
+	
+	ReadTextP1= PDFApplication("name:="&Pdf_file_Name&".pdf").GetText()
+	
+	
+	Main= replace(replace (ReadTextP1, " ",""),"Â","")
+	
+	ReportWriter micPass,"Capture PDF Page 1 screenshots", "Captured Screenshot for Page1 PDF.", 0
+	
+	
+	'Account no
+
+S100=split(Main,"StatementofAccount ")(1)
+	
+PDF_ACCOUNT_1=trim(split(S100,"*")(0))
+	
+PDF_ACCOUNT="*Account"&PDF_ACCOUNT_1&"*"
+	
+ReportWriter micDone,"Capture PDF Account Name.", "Captured PDF Account Name: "&PDF_ACCOUNT, 0
+	
+ReportWriter micDone,"Capture GT Account Name.", "Captured GT Account Name: "&GT_ACCOUNT, 0
+	
+If Instr(1,PDF_ACCOUNT,GT_ACCOUNT)=0 Then
+	
+ReportWriter micDone,"Compare PDF and GT", "Captured GT Account Name does not match with PDF", 0
+	
+Else
+	
+ReportWriter micDone,"Compare PDF and GT", "Captured GT Account Name match with PDF", 0
+	
+End If
+
+If GT_ADDRESS_LINE1<>"" Then
+sString2 = GT_ADDRESS_LINE1
+End if
+
+ 
+
+If GT_ADDRESS_LINE2<>"" Then
+sString2 = sString2&" "&GT_ADDRESS_LINE2
+End if
+
+ 
+
+If GT_ADDRESS_LINE3<>"" Then
+sString2 = sString2&" "&GT_ADDRESS_LINE3
+End if
+
+ 
+
+
+If GT_ADDRESS_LINE4<>"" Then
+sString2 = sString2&" "&GT_ADDRESS_LINE4
+End if
+
+ 
+
+
+If GT_ADDRESS_LINE5<>"" Then
+sString2 = sString2&" "&GT_ADDRESS_LINE5
+End if
+
+ 
+
+If GT_POSTCODE<>"" Then
+sString2 = sString2&" "&GT_POSTCODE
+End if
+
+ 
+
+'Fetch address as per line
+sval = Split(S100," YourAccountNumber")
+
+
+If Instr(1, sval(0), sString2)>0 Then
+   ReportWriter micDone,"Compare PDF and GT", "Captured GT Address Names match with PDF", 0
+Else
+    ReportWriter micDone,"Compare PDF and GT", "Captured GT Address Names does not match with PDF", 0
+End if
+	
+	'Address Line1
+	
+S200=split(Main,"*Address")(1)
+	
+PDF_ADDRESS_LINE1_1=trim(split(S200,"*")(0))
+	
+PDF_ADDRESS_LINE1="*Address"&PDF_ADDRESS_LINE1_1&"*"
+	
+ReportWriter micDone,"Capture PDF Address Line 1.", "Captured PDF Address Line 1:"&PDF_ADDRESS_LINE1, 0
+	
+ReportWriter micDone,"Capture GT Address Line 1.", "Captured GT Address Line 1:"&GT_ADDRESS_LINE1, 0
+
+If Instr(1,PDF_ACCOUNT,GT_ACCOUNT)=0 Then
+	
+ReportWriter micDone,"Compare PDF and GT", "Captured GT Address Line 1 does not match with PDF", 0
+	
+Else
+	
+ReportWriter micDone,"Compare PDF and GT", "Captured GT Address Line 1 match with PDF", 0
+	
+End If
+	
+	'Address Line2
+	
+S300=split(Main,"Address2_")(1)
+	
+PDF_ADDRESS_LINE2_1=trim(split(S300,"Address4_")(0))
+	
+PDF_ADDRESS_LINE2= "Address2_"&PDF_ADDRESS_LINE2_1
+	
+ReportWriter micDone,"Capture PDF Address Line 2.", "Captured PDF Address Line 2:"&PDF_ADDRESS_LINE2, 0
+	
+ReportWriter micDone,"Capture GT Address Line 2.", "Captured GT Address Line 2:"&GT_ADDRESS_LINE2, 0
+	
+If Instr(1,PDF_ADDRESS_LINE2,GT_ADDRESS_LINE2)=0 Then
+	
+ReportWriter micDone,"Compare PDF and GT", "Captured GT Address Line 2 does not match with PDF", 0
+	
+Else
+	
+ReportWriter micDone,"Compare PDF and GT", "Captured GT Address Line 2 match with PDF", 0
+	
+End If
+
+	'Address Line3 and Line4, Post code
+	
+If instr(Main,"Address3_") Then
+	
+S400=split(Main,"Address3_")(1)
+	
+PDF_ADDRESS_LINE3_1=trim(split(S400,"Address4_")(0))
+	
+'PDF_ADDRESS_LINE3= "Address3_"&PDF_ADDRESS_LINE3_1
+PDF_ADDRESS_LINE3= PDF_ADDRESS_LINE3_1
+
+ReportWriter micDone,"Capture PDF Address Line 3.", "Captured PDF Address Line 3:"&PDF_ADDRESS_LINE3, 0
+	
+ReportWriter micDone,"Capture GT Address Line 3.", "Captured GT Address Line 3:"&GT_ADDRESS_LINE3, 0
+	
+If Instr(1,PDF_ADDRESS_LINE3,GT_ADDRESS_LINE3)=0 Then
+	
+ReportWriter micDone,"Compare PDF and GT", "Captured GT Address Line 3 does not match with PDF", 0
+	
+Else
+	
+ReportWriter micDone,"Compare PDF and GT", "Captured GT Address Line 3 match with PDF", 0
+	
+End If
+
+
+If instr(Main,"Address4_") Then
+	
+S400=split(Main,"Address4_")(1)
+	
+PDF_ADDRESS_LINE3_1=trim(split(S400,"Address5_")(0))
+	
+PDF_ADDRESS_LINE3= "Address4_"&PDF_ADDRESS_LINE3_1
+	
+ReportWriter micDone,"Capture PDF Address Line 4.", "Captured PDF Address Line 4:"&PDF_ADDRESS_LINE3, 0
+	
+ReportWriter micDone,"Capture GT Address Line 4.", "Captured GT Address Line 4:"&GT_ADDRESS_LINE3, 0
+	
+If Instr(1,PDF_ADDRESS_LINE3,GT_ADDRESS_LINE3)=0 Then
+	
+ReportWriter micDone,"Compare PDF and GT", "Captured GT Address Line 3 does not match with PDF", 0
+	
+Else
+	
+ReportWriter micDone,"Compare PDF and GT", "Captured GT Address Line 3 match with PDF", 0
+End If	
+End If
+
+
+If instr(Main,"YourAccountNumber") Then
+	
+S400=split(Main,"YourAccountNumber")(1)
+	
+PDF_ADDRESS_LINE3_1=trim(split(S400,"StatementStartDate")(0))
+	
+PDF_ADDRESS_LINE3= "YourAccountNumber"&PDF_ADDRESS_LINE3_1
+	
+ReportWriter micDone,"Capture PDF Address Line 4.", "Captured PDF Address Line 4:"&PDF_ADDRESS_LINE3, 0
+	
+ReportWriter micDone,"Capture GT Address Line 4.", "Captured GT Address Line 4:"&GT_ADDRESS_LINE3, 0
+	
+If Instr(1,PDF_ADDRESS_LINE3,GT_ADDRESS_LINE3)=0 Then
+	
+ReportWriter micDone,"Compare PDF and GT", "Captured GT Address Line 3 does not match with PDF", 0
+	
+Else
+	
+ReportWriter micDone,"Compare PDF and GT", "Captured GT Address Line 3 match with PDF", 0
+End If	
+End If
+
+
+
+S500=split(Main,"Address4_")(1)
+	
+S21_Address_L4=split (S500,"InvoiceNumber")(0)
+	
+PDF_ADDRESS_LINE4_1= trim(left (S21_Address_L4,(len(S21_Address_L4))-7))
+	
+PDF_ADDRESS_LINE4= "Address4_"&PDF_ADDRESS_LINE4_1
+	
+PDF_POSTCODE= trim(right (S21_Address_L4,7))
+	
+ReportWriter micDone,"Capture PDF Address Line 4.", "Captured PDF Address Line 4:"&PDF_ADDRESS_LINE4, 0
+	
+ReportWriter micDone,"Capture GT Address Line 4.", "Captured GT Address Line 4:"&GT_ADDRESS_LINE4, 0
+	
+If Instr(1,PDF_ADDRESS_LINE4,GT_ADDRESS_LINE4)=0 Then
+	
+ReportWriter micDone,"Compare PDF and GT", "Captured GT Address Line 4 does not match with PDF", 0
+	
+Else
+	
+ReportWriter micDone,"Compare PDF and GT", "Captured GT Address Line 4 match with PDF", 0
+	
+End If
+ReportWriter micDone,"Capture PDF Post code.", "Captured PDF Post code: "&PDF_POSTCODE, 0
+	
+ReportWriter micDone,"Capture GT Post code.", "Captured GT Post code: "&GT_POSTCODE, 0
+	
+If Instr(1,PDF_POSTCODE,GT_POSTCODE)=0 Then
+	
+ReportWriter micDone,"Compare PDF and GT", "Captured GT Postcode does not match with PDF", 0
+	
+Else
+	
+ReportWriter micDone,"Compare PDF and GT", "Captured GT Postcode match with PDF", 0
+	
+End If
+	
+Else
+
+S400=split(Main,"Address3_")(1)
+	
+S21_Address_L3=split(S400,"InvoiceNumber")(0)
+	
+PDF_ADDRESS_LINE3_1= trim(left (S21_Address_L3,(len(S21_Address_L3))-7))
+	
+PDF_ADDRESS_LINE3= "Address3_"&PDF_ADDRESS_LINE3_1
+	
+PDF_POSTCODE= trim(right (S21_Address_L3,7))
+	
+ReportWriter micDone,"Capture PDF Address Line 3.", "Captured PDF Address Line 3:Address3_"&PDF_ADDRESS_LINE3, 0
+	
+ReportWriter micDone,"Capture GT Address Line 3.", "Captured GT Address Line 3:Address3_"&GT_ADDRESS_LINE3, 0
+	
+If Instr(1,PDF_ADDRESS_LINE3,GT_ADDRESS_LINE3)=0 Then
+	
+ReportWriter micDone,"Compare PDF and GT", "Captured GT Address Line 3 does not match with PDF", 0
+	
+Else
+	ReportWriter micDone,"Compare PDF and GT", "Captured GT Address Line 3 match with PDF", 0
+	
+End If
+ReportWriter micDone,"Capture PDF Post code.", "Captured PDF Post code: "&PDF_POSTCODE, 0
+	
+ReportWriter micDone,"Capture GT Post code.", "Captured GT Post code: "&GT_POSTCODE, 0
+	
+If Instr(1,PDF_POSTCODE,GT_POSTCODE)=0 Then
+	
+ReportWriter micDone,"Compare PDF and GT", "Captured GT Postcode does not match with PDF", 0
+	
+Else
+	
+ReportWriter micDone,"Compare PDF and GT", "Captured GT Postcode match with PDF", 0
+	
+End If
+	
+End If
+	
+	
+	'Invoce No
+	
+S12=split(Main,"InvoiceNumber")(1)
+	
+PDF_INVOICE_NO=split(S12,"DateofInvoice")(0)
+	
+ReportWriter micDone,"Capture PDF Invoice No.", "Captured PDF Invoice No: "&PDF_INVOICE_NO, 0
+	
+	ReportWriter micDone,"Capture Junifer new Invoice No.", "Captured Junifer new Invoice No: "&GT_INVOICE_NO, 0
+	
+	If Instr(1,PDF_INVOICE_NO,GT_INVOICE_NO)=0 Then
+	
+	ReportWriter micDone,"Compare PDF and Junifer", "Captured Junifer new Invoice Number does not match with PDF", 0
+	
+	Else
+	
+	ReportWriter micDone,"Compare PDF and Junifer", "Captured Junifer new Invoice Number match with PDF", 0
+	
+	End If
+	'' Date of Invoice
+	
+	S22=split(S12,"DateofInvoice")(1)
+	
+	PDF_DATE_OF_INVOICE=split(S22,"InvoicePeriod")(0)
+	
+	ReportWriter micDone,"Capture PDF Date of Invoice.", "Captured PDF Date of Invoice: "&PDF_DATE_OF_INVOICE, 0
+	
+	ReportWriter micDone,"Capture Dataset Date of Invoice.", "Captured Dataset Date of Invoice: "&GT_DATE_OF_INVOICE, 0
+	
+	If Instr(1,PDF_DATE_OF_INVOICE,GT_DATE_OF_INVOICE)=0 Then
+	
+	ReportWriter micDone,"Compare PDF and Dataset", "Captured Dataset Date of Invoice does not match with PDF", 0
+	
+	Else
+	
+	ReportWriter micDone,"Compare PDF and Dataset", "Captured  Dataset  Date of Invoice match with PDF", 0
+	
+	End If
+	
+	
+	'' Invoice Period
+	
+	S32=split(S22,"InvoicePeriod")(1)
+	
+	PDF_INVOICE_PERIOD =split(S32,"YourAccountNumber")(0)
+	
+	ReportWriter micDone,"Capture PDF Invoice Period.", "Captured PDF Invoice Period: "&PDF_INVOICE_PERIOD, 0
+	
+	ReportWriter micDone,"Capture Dataset Invoice Period.", "Captured Dataset Invoice Period: "&GT_INVOICE_PERIOD, 0
+	
+	If Instr(1,PDF_INVOICE_PERIOD,GT_INVOICE_PERIOD)=0 Then
+	
+	ReportWriter micDone,"Compare PDF and Dataset", "Captured Dataset Invoice Period does not match with PDF", 0
+	
+	Else
+	
+	ReportWriter micDone,"Compare PDF and Dataset", "Captured Dataset  Invoice Period match with PDF", 0
+	
+	End If
+	
+	
+	'' Account Number
+	
+	S42=split(S32,"YourAccountNumber")(1)
+	
+	PDF_ACCOUNT_NO =split(S42,"DueDate")(0)
+	
+	ReportWriter micDone,"Capture PDF Account No.", "Captured PDF Account No: "&PDF_ACCOUNT_NO, 0
+	
+	ReportWriter micDone,"Capture Dataset Account No.", "Captured Dataset Account No: "&GT_ACCOUNT_NO, 0
+	
+	If Instr(1,PDF_ACCOUNT_NO,GT_ACCOUNT_NO)=0 Then
+	
+	ReportWriter micDone,"Compare PDF and Dataset", "Captured Dataset Account Number does not match with PDF", 0
+	
+	Else
+	
+	ReportWriter micDone,"Compare PDF and Dataset", "Captured Dataset  Account Number match with PDF", 0
+	
+	End If
+	
+	
+	' Due Date
+	
+	S52=split(S42,"DueDate")(1)
+	
+	PDF_DUE_DATE =split(S52,"YourChargesSummary")(0)
+	
+	ReportWriter micDone,"Capture PDF Due Date.", "Captured PDF Due Date: "&PDF_DUE_DATE, 0
+	
+	ReportWriter micDone,"Capture Dataset Due Date.", "Captured Dataset Due Date: "&GT_DUE_DATE, 0
+	
+	If Instr(1,PDF_DUE_DATE,GT_DUE_DATE)=0 Then
+	
+	ReportWriter micDone,"Compare PDF and Dataset", "Captured Dataset Due Datedoes not match with PDF", 0
+	
+	Else
+	
+	ReportWriter micDone,"Compare PDF and Dataset", "Captured Dataset  Due Date match with PDF", 0
+	
+	End If
+	
+	
+	'' Total Amount Payable
+	
+	S62=split(S52,"TotalAmountPayable")(1)
+	
+	PDF_TAP_x =split(S62,"YourPaymentInstructions")(0)
+	
+	PDF_TOTAL_AMOUNT_PAYABLE = Trim (replace (PDF_TAP_x,"£",""))
+	
+	ReportWriter micDone,"Capture PDF Total Amount Payable.", "Captured PDF Total Amount Payable £: "&PDF_TOTAL_AMOUNT_PAYABLE, 0
+	
+	ReportWriter micDone,"Capture Dataset Total Amount Payable.", "Captured Dataset Total Amount Payable £: "&GT_TOTAL_AMOUNT_PAYABLE, 0
+	
+	If Instr(1,PDF_TOTAL_AMOUNT_PAYABLE,GT_TOTAL_AMOUNT_PAYABLE)=0 Then
+	
+	ReportWriter micDone,"Compare PDF and Dataset", "Captured Dataset Total Amount Payable not match with PDF", 0
+	
+	Else
+	
+	ReportWriter micDone,"Compare PDF and Dataset", "Captured Dataset  Total Amount Payable match with PDF", 0
+	
+	End If
+	
+	PDFApplication("name:="&Pdf_file_Name&".pdf").Close
+	
+	
+	End If
+
+End function
+
+Function ValidatePDF
+'
+'If Reporter.lScenarioStatus = "FAIL"  Then
+'			Exit Function
+'	Else
+	'Check if server exception occurs
+	If JUN_WINDOW.SwfWindow("text:=Server Exception").Exist(3) Then
+		ReportWriter MicFail,"Validate Pdf","Server Exception occurred unable to view pdf", 1
+		JUN_WINDOW.SwfWindow("text:=Server Exception").SwfButton(BTN_OK).Click
+		Exit Function
+	else
+		ReportWriter MicDone,"Save Pdf","Save PDF available", 0
+	End If
+	
+	'handle multi pdf window
+	Set oDesc = Description.Create
+	oDesc("regexpwndclass").value = "AcrobatSDIWindow"
+		
+	If Window("regexpwndtitle:=Adobe Reader").Exist(5) Then
+		'Do Nothing
+	Else
+		If Window(oDesc,"index:=0").Exist(2) Then
+			sWinHandle2 = Window(oDesc,"index:=0").GetROProperty("hwnd")
+			 Window(oDesc,"hwnd:="&sWinHandle2).Close
+		End If		
+	End If
+	
+	'Save Pdf
+	If Window("regexpwndtitle:= Adobe Reader").Exist(5) Then
+		
+		'Set Pdf size to 100%
+		Window("regexpwndtitle:= Adobe Reader").WinEdit("regexpwndclass:=Edit","regexpwndtitle:=.*%").Set 100
+		
+		'Send keys to select
+		Set Keys = CreateObject("WScript.Shell")
+		Keys.SendKeys("{ENTER}")
+		
+		wait 2
+		
+		'Set Size to 100
+		ReportWriter MicPass,"Set Pdf Size to 100%","Pdf Size updated to 100%", 0
+		
+		Keys.SendKeys("+^(s)")
+		
+		wait 8
+		
+		'save file
+		Window("regexpwndtitle:= Adobe Reader").Dialog("text:=Save As").WaitProperty "enabled","True",1000
+		sNm=Window("regexpwndtitle:= Adobe Reader").Dialog("text:=Save As").WinEdit("regexpwndclass:=Edit").GetROProperty("text")
+		sTestNm = Split(TestName,"_")
+		
+		wait 8
+		
+		'Handle wait
+		''Window("regexpwndtitle:= Adobe Reader").Dialog("text:=Save As").WinObject("regexpwndclass:=Address Band Root").WaitItemProperty "enabled","true",500
+		Window("regexpwndtitle:= Adobe Reader").Dialog("text:=Save As").WinObject("regexpwndclass:=Address Band Root").WaitProperty "enabled","true",500
+		'Set file save address
+		Window("regexpwndtitle:= Adobe Reader").Dialog("text:=Save As").WinObject("regexpwndclass:=Address Band Root").Click 5,5,micRightBtn
+		'Window("regexpwndtitle:= Adobe Reader").Dialog("text:=Save As").WinObject("regexpwndclass:=Address Band Root").
+		Keys.SendKeys("{DOWN}")
+		Keys.SendKeys("{DOWN}")
+		Keys.SendKeys("{DOWN}")
+		Keys.SendKeys("{ENTER}")
+		wait 3
+		Window("regexpwndtitle:= Adobe Reader").Dialog("text:=Save As").WinObject("regexpwndclass:=Address Band Root").Type sProjectPath&"\"&"Temp\"
+		Keys.SendKeys("{ENTER}")
+		GT_FILEPATH=sProjectPath&"\"&"Temp\"
+		
+		wait 8
+		
+		'Set Size to 100
+		ReportWriter MicPass,"Update Pdf save path to desired location","Pdf save location updated to - "&sProjectPath&"\"&"Temp\", 0
+		
+		'Set file name
+		'GT_FILENAME=sTestNm(0)&"_"&sTestNm(0)&"_"&sNm
+		'GT_FILENAME=sTestNm(0)
+		GT_FILENAME= sTestNm(0)&sNm
+		wait 1
+		
+		
+		If Dialog("text:=Save As").WinEdit("regexpwndclass:=Edit").Exist(2) Then
+			Dialog("text:=Save As").WinEdit("regexpwndclass:=Edit").Set GT_FILENAME
+		else
+			Window("regexpwndtitle:= Adobe Reader").Dialog("text:=Save As").WinEdit("regexpwndclass:=Edit").Set GT_FILENAME		
+			
+		End If
+		
+		wait 5
+		'Set Size to 100
+'		Keys.SendKeys("{TAB}")
+		wait 2
+		ReportWriter MicPass,"Update Pdf file name","Pdf file name updated to - "&sTestNm(0), 0
+		
+		Keys.SendKeys("{ENTER}")
+		
+'		If Dialog("text:=Save As").WinButton("text:=&Save").Exist(2) Then
+'			
+'			Dialog("text:=Save As").WinButton("text:=&Save").WinButton("text:=&Save").Click
+'		else
+'			Window("regexpwndtitle:= Adobe Reader").Dialog("text:=Save As").WinButton("text:=&Save").Click
+'		End If
+'		
+		
+		
+		wait 15
+		
+		If Dialog("regexpwndtitle:=Confirm Save As").Exist(2) Then
+			Dialog("regexpwndtitle:=Confirm Save As").WinButton("regexpwndtitle:=&Yes").Click	
+		End If
+		
+		wait 7
+		
+		'Set Nothing
+		Keys.SendKeys("^q")
+		Set Keys = Nothing
+		
+	ElseIf UIAWindow("name:=.*Microsoft​ Edge").Exist(2) Then
+		UIAWindow("name:=.*Microsoft​ Edge").UIAButton(UIA_PDF_SAVEAS).WaitProperty "enabled","true",500
+		UIAWindow("name:=.*Microsoft​ Edge").UIAButton(UIA_PDF_SAVEAS).Click
+		
+		wait 5
+		
+		'Set path
+		sNm=Window("regexpwndtitle:= Microsoft​ Edge").GetROProperty("text")
+		Window("regexpwndtitle:= Microsoft​ Edge").Dialog("regexpwndtitle:=Save As").WinEdit("regexpwndtitle:=File name.*").Set sAutomationPath&"\Engie\Temp\"&"7.7.7_"&sNm
+	End If
+	
+	'Validate Address
+'End If 
+End Function
+
+Function Compare2PDF_LineByLine(File1_TEST_name,File2_PROD_name)
+
+If Reporter.lScenarioStatus = "FAIL"  Then
+			Exit Function
+Else	
+	TempPath = GT_FILEPATH
+	ProdPath = sProjectPath&"\"&"Data\SupportFiles\ProductionPDF\"
+	TestFileName = File1_TEST_name
+	ProdFileName = File2_PROD_name
+	
+	TestFilePath = TempPath & TestFileName 
+	ProdFilePath =  ProdPath & ProdFileName
+
+	PdfUtil.Open (TestFilePath&".pdf")
+	wait 3
+	PDFApplication("name:="&TestFileName&".pdf").Maximize
+	wait 2
+	ReadTextP1= PDFApplication("name:="&TestFileName&".pdf").GetText()
+	
+	ReportWriter micPass,"Capture TEST PDF Page 1 screenshots", "Captured Screenshot for Page1 TEST PDF.", 0
+	
+	PDFApplication("name:="&TestFileName&".pdf").Close 
+	wait 2
+	ReadTextP1 = Replace(ReadTextP1, Vbcr, Vbcrlf)
+	
+	PdfUtil.Open (ProdFilePath&".pdf")
+	wait 3
+	PDFApplication("name:="&ProdFileName&".pdf").Maximize
+	wait 2
+	ReadTextP2= PDFApplication("name:="&ProdFileName&".pdf").GetText()
+	
+	ReportWriter micPass,"Capture PROD PDF Page 1 screenshots", "Captured Screenshot for Page1 PROD PDF.", 0
+	
+	PDFApplication("name:="&ProdFileName&".pdf").Close 
+	wait 2
+	ReadTextP2 = Replace(ReadTextP2, Vbcr, Vbcrlf)
+
+
+	Set oFSO = CreateObject("Scripting.FileSystemObject")
+	
+	sTimeStamp1 = Replace(Replace(Replace(Now, " ", "_"), "/", ""), ":", "")
+	tPath = TempPath & TestFileName & "_" & sTimeStamp1 &".txt"
+	''Create notepad for Test file
+	Set tFile = oFSO.CreateTextFile(tPath,True)
+	tFile.WriteLine ReadTextP1 
+	tFile.Close
+
+	sTimeStamp2 = Replace(Replace(Replace(Now, " ", "_"), "/", ""), ":", "")
+	 pPath= TempPath & ProdFileName & "_" & sTimeStamp2 &".txt"
+	''Create notepad for Production file
+	Set pFile = oFSO.CreateTextFile(pPath,True)
+	pFile.WriteLine ReadTextP2
+	pFile.Close
+
+	Const ForReading = 1
+	Set objFSO = CreateObject("Scripting.FileSystemObject")
+	Set objFileTest = objFSO.OpenTextFile(tPath, ForReading)
+	Set objFileProd = objFSO.OpenTextFile(pPath, ForReading)
+	strProd = objFileProd.ReadAll
+
+	i = 1
+	fi = 0
+	Do Until objFileTest.AtEndOfStream
+   		strTest = objFileTest.ReadLine
+   		 If InStr( strProd, strTest) = 0 Then
+    			fi=1
+    	 		strmismatchTest =  "Line-" & i &":" &"[Test PDF]: "& strTest
+	 		ReportWriter micDone,"Mismatch in TEST ", "" & strmismatchTest, 0	
+   		 End If
+    		i = i +1
+	Loop
+
+	Set objFileTest = objFSO.OpenTextFile(tPath, ForReading)
+	Set objFileProd = objFSO.OpenTextFile(pPath, ForReading)
+
+	j = 1
+	fj=0
+	strProd = ""
+	strTest = objFileTest.ReadAll
+	Do Until objFileProd.AtEndOfStream
+    		strProd = objFileProd.ReadLine
+   		 If InStr( strTest, strProd) = 0 Then
+    			fj=1
+       	 	strmismatchProd = "Line-" & j &":" &"[Prod PDF]: "& strProd
+        		ReportWriter micDone,"Mismatch in Prod ", "" & strmismatchProd, 0	
+   		 End If
+   		 j = j +1
+	Loop
+	
+	If  fi = 0 Then
+		ReportWriter MicDone,"Compare Test with Prod PDF ", "No mismatch found when compare Test with Prod PDF.", 4
+	End If
+
+	If  fj = 0 Then
+		ReportWriter MicDone,"Compare Prod with Test PDF ", "No mismatch found when compare Prod with Test PDF.", 4
+	End If
+
+	objFileProd.Close
+	objFileTest.Close
+
+End If
+
+End function
+
+
+Function SetExcelCellData(SheetName, intRow, intCol, strValue)
+    Set objExcel = CreateObject("Excel.Application")
+    objExcel.DisplayAlerts = False
+    Set objWorkbook = objExcel.Workbooks.Open(DATA_DIR&"TestData.xlsx") '(DB_PATH)
+    Set objSheet  = objWorkbook.Worksheets(SheetName)   'Or pass sheet number integer value 1,2,etc
+    objSheet.Cells(intRow, intCol).value = strValue
+    objWorkbook.Save
+    objWorkbook.Close
+    Set objSheet  = Nothing
+    Set objWorkbook = Nothing
+    Set objExcel = Nothing
+End Function
+
+Function GenRandomNum
+
+	'Set min and max
+	min = 1070
+	max = 1100
+	
+	'Randomize
+	RandomInt1=(int((max-min+1)*Rnd+min))
+	RandomInt2=(int((max-min+1)*Rnd+min))
+	
+	'Returns Value
+	GenRandomNum=RandomInt1&RandomInt2
+	
+End Function
+
+Function CaptureUKDateTime
+	'Store Current Date and Time with space as interval - hh:mm format
+	Hr= DateAdd("h", -5,Now)
+ 	SubHR=DateAdd("n", -30,Hr)
+ 	hm =Right("00" & Hour(SubHR), 2) &":"& Right("00" & Minute(SubHR), 2)
+ 	
+ 	'MM-DD-YYYY Format
+ 	tm=Now
+	sSplit=Split(tm," ")
+	If sSplit(1)<"05:30:00" Then
+		Tdy=DateAdd("d",-1,Date)
+	Else
+		Tdy=Date	
+	End If
+ 	
+ 	'Final Combined date without seconds
+ 	sFinalDate=Tdy &" "&hm 'eg: 09-11-2022 23:08
+ 	
+End Function
+
+Function SetRunTimeData(InputData,sSheetName,FieldToSet,ValToSet) 'Set Runtime data on Run time data excel from support files folder based on testdata table link id
+	Set objExcel = CreateObject("Excel.Application")
+    	objExcel.DisplayAlerts = False
+    	'Set objWorkbook = objExcel.Workbooks.Open(DATA_DIR&"SupportFiles\RuntimeData.xlsx") '(DB_PATH)
+    	Set objWorkbook = objExcel.Workbooks.Open(DATA_DIR&"TestData.xlsx") '(DB_PATH)
+    	Set objSheet  = objWorkbook.Worksheets(sSheetName)   'Or pass sheet number integer value 1,2,etc
+    	
+    	Set objRowRange = objSheet.UsedRange
+    	RowCnt=objRowRange.Rows.Count
+    	ColCnt = objRowRange.Columns.Count
+    	
+    	For i = 1 To RowCnt
+    		If objSheet.Cells(i,2).Value=InputData("TestDataTableLinkID") Then
+    		     StrTC = i
+    			For j = 1 To ColCnt
+    				If objSheet.Cells(1,j).Value=FieldToSet Then
+    					StrVal = j
+    					wait 1
+    					objSheet.Cells(StrTC, StrVal).value = ValToSet
+    					wait 1
+    					ReportWriter MicDone,"Write output of  value into " &FieldToSet, "Updated output value as " &ValToSet, 0
+    					Exit for
+    				End If	
+    			Next
+    			Exit for
+    		End If
+    	Next
+    	wait 1
+    	objWorkbook.Save
+    	wait 1
+    	objWorkbook.Close
+    	Set objSheet  = Nothing
+    	Set objWorkbook = Nothing
+    	Set objExcel = Nothing
+End Function
+
